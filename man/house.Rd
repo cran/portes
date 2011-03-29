@@ -33,8 +33,8 @@ McQuarrie, A. D., Tsai, C.-L., 1998. "Regression and time series model selection
 }
 
 \examples{
-acf(CRSP)
-FitStable(CRSP)
+acf(house)
+fitstable(house)
 }
 
 \keyword{datasets}

@@ -23,7 +23,7 @@ Tsay, R. S. (2005). "Analysis of Financial Time Series". Wiley, New York, 2nd ed
 
 \examples{
 acf(monthintel)
-FitStable(monthintel)
+fitstable(monthintel)
 }
 
 \keyword{datasets}

@@ -2,7 +2,7 @@
 \alias{DEXCAUS}
 \docType{data}
 
-\title{ Canada/US Foreign Exchanges Rates, Daily, Sept 6, 1996 to Sept. 5, 1996. }
+\title{ Canada/US Foreign Exchanges Rates, Daily, Jan. 4, 1971 to Sept. 5, 1996. }
 
 \description{
 There are 2513 data values.
@@ -29,7 +29,7 @@ Notes:               Noon buying rates in New York City for cable transfers paya
 
 \examples{
 acf(DEXCAUS)
-FitStable(DEXCAUS)
+fitstable(DEXCAUS)
 }
 
 \keyword{datasets}

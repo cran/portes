@@ -19,20 +19,23 @@ ImpulseVMA(phi=NULL,theta=NULL,Trunc.Series=NA)
 }
 
 \value{
-The impulse response coefficients of order \code{Trunc.Series+1} obtained by converting the \code{ARMA}\eqn{(p,q)} or \code{VARMA}\eqn{(p,q)} 
+The impulse response coefficients of order \code{Trunc.Series+1} obtained by 
+converting the \code{ARMA}\eqn{(p,q)} or \code{VARMA}\eqn{(p,q)} 
 process to infinite \code{MA} or \code{VMA} process, respectively. 
 }
 
-\author{ Esam Mahdi & A.I. McLeod.}
+\author{ Esam Mahdi and A.I. McLeod.}
 
 \references{
-Brockwell, P. J. and Davis, R. A. (1991). "Time Series: Theory and Methods". Springer, 2nd edition. 
+Lutkepohl, H. (2005). "New introduction to multiple time series analysis". 
+Springer-Verlag, New York.
 
-Reinsel, G. C. (1997). "Elements of Multivariate Time Series Analysis". Springer-Verlag, 2nd edition.
+Reinsel, G. C. (1997). "Elements of Multivariate Time Series Analysis". 
+Springer-Verlag, 2nd edition.
 }
 
-\seealso{ \code{\link[stats]{ARMAtoMA}}, \code{\link{simvarma}}, \code{\link{simvma}}, 
-\code{\link{InvertQ}}, \code{InvertibleQ}
+\seealso{ \code{\link[stats]{ARMAtoMA}}, \code{\link{varima.sim}}, \code{\link{vma.sim}}, 
+\code{\link{InvertQ}}, \code{\link{InvertibleQ}}
 }
 
 \examples{

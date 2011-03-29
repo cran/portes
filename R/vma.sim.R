@@ -1,4 +1,4 @@
-"simvma" <-
+"vma.sim" <-
 function(psi,a){
     if (!is.null(psi) && class(psi)!="array")
 	stop("Psi must be enterd as NULL or array with dimension (k*k*Q)")

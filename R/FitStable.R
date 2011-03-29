@@ -1,4 +1,4 @@
-"FitStable" <-
+"fitstable" <-
 function(x){
 MCTable3 <-
 structure(c(2.439, 2.439, 2.439, 2.439, 2.439, 2.439, 2.439, 

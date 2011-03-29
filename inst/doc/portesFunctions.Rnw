@@ -1,0 +1,890 @@
+\documentclass[article,nojss]{jss}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{bm} % Bold Math package
+\usepackage{url}
+\def\command#1{{\it #1}}
+\newfont{\tit}{cmss10 scaled\magstep1}
+\def\ti#1{{\tit #1}}
+\def\ARIMA{\textsc{arima}\,}
+\def\VARMA{\textsc{varma}\,}
+\def\AR{\textsc{ar}\,}
+\def\ARCH{\textsc{arch}\,}
+\def\VAR{\textsc{var}\,}
+\def\VMA{\textsc{vma}\,}
+\def\ARMA{\textsc{arma}\,}
+\def\AR{\textsc{ar}\,}
+\def\MA{\textsc{ma}\,}
+\def\GARCH{\textsc{garch}\,}
+\def\FDWN{\textsc{fdwn}\,}
+\def\AIC{\textsc{aic}\,}
+\def\BIC{\textsc{bic}\,}
+\def\FPE{\textsc{fpe}\,}
+
+\author{Esam Mahdi\\ University of
+               Western Ontario \And
+         A. Ian McLeod\\University of
+         Western Ontario}
+\title{Portmanteau Test Statistics}
+
+\Plainauthor{A. Ian McLeod, Second Author} %% comma-separated
+\Plaintitle{Test Statistics} %% without formatting
+
+\Abstract{
+In this vignette, we give a brief description about the
+portmanteau test statistics given in the \pkg{portes} package.
+Some applications, including two examples from \citet{MahdiMcLeod2011}
+are given in this vignette as well.
+}
+
+\Keywords{\ARMA models, Monte-Carlo significance test, 
+Portmanteau test, \VARMA models
+}
+
+\Address{
+  A. Ian McLeod\\
+  Department of Statistical and Actuarial Sciences\\
+  University of Western Ontario\\
+  E-mail: \email{aim@stats.uwo.ca}\\
+  URL: \url{http://www.stats.uwo.ca/mcleod}\\
+  Esam Mahdi\\
+  Department of Statistical and Actuarial Sciences\\
+  University of Western Ontario\\
+  E-mail: \email{emahdi@uwo.ca}\\
+}
+
+%% end of declarations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+<<preliminaries,echo=FALSE,results=hide>>=
+online <- FALSE ## if set to FALSE the local copy of MSFT.rda
+                ## is used instead of get.hist.quote()
+options(prompt = "R> ")
+@
+
+%\VignetteIndexEntry{Performance of gvtest: Power Simulations Comparing}
+%\VignetteDepends{portes,snow,forecast}
+%\VignetteKeywords{generalized variance portmanteau test, Parametric bootstrap significance test, Power Simulations}
+%\VignettePackage{portes}
+
+%%%%%%%%%%%%%%%%%%%
+\section[Box and Pierce portmanteau tests]{Box and Pierce portmanteau test}
+\label{BoxPierceTest}
+
+In the univariate time series, \citet{BoxPierce1970} introduced the portmanteau statistic
+\begin{equation}\label{BoxPierceEqn}
+Q_m=n\sum_{\ell=1}^{m}\Hat{r}_{\ell}^{2}
+\end{equation}
+where
+$\Hat{r}_{\ell}=\sum_{t=\ell+1}^{n}\Hat{a}_{t}\Hat{a}_{t-\ell}/\sum_{t=1}^{n}\Hat{a}_{t}^2$,
+and $\Hat{a}_{1},\ldots,\Hat{a}_{n}$ are the residuals.
+This test statistic is implemented in the \proglang{R} function \code{BoxPierce()}
+and can be used in the multivariate case as well.
+It has a chi-square distribution with $k^2(m-(p+q))$ degrees of freedom where $k$ represents
+the dimension of the time series.
+The usage of this function is extremely simple:
+
+\begin{verbatim}
+BoxPierce(obj, lags = seq(5, 30, 5), order = 0, SquaredQ = FALSE),
+\end{verbatim}
+
+where
+\code{obj} is a univariate or multivariate series with class \code{"numeric"}, \code{"matrix"},
+\code{"ts"}, or \code{("mts" "ts")}.
+It can be also an object of fitted time-series model with class \code{"ar"},
+\code{"arima0"}, \code{"Arima"}, \code{"varest"}, \code{"FitAR"}, or \code{"FitFGN"}.
+\code{lags} is a vector of numeric integers represents the lag values, $m$,
+at which we need to check the adequacy
+of the fitted model.
+The argument \code{order} is used for degrees of freedom of asymptotic chi-square distribution.
+If \code{obj} is a fitted time-series model with class \code{"ar"},
+\code{"arima0"}, \code{"Arima"}, \code{"varest"}, \code{"FitAR"}, or \code{"FitFGN"} then no need to enter
+the value of \code{order} as it will be automatically determined.
+In general \code{order = p + q}, where \code{p} and \code{q} are the orders of the autoregressive (or vector autoregressive)
+and moving average (or vector moving average) models respectively.
+\code{order = 0} is used for testing random series, fractional gaussian noise,
+or generalized autoregressive conditional heteroscedasticity.
+Finally, when \code{SquaredQ = TRUE}, then apply the test on the squared values.
+This checks for Autoregressive Conditional Heteroscedastic, \code{ARCH}, effects.
+When \code{SquaredQ = FALSE}, then apply the test on the usual residuals.
+
+Note that the function \code{portest()} with the
+arguments \code{test = "BoxPierce", MonteCarlo = FALSE}, and \code{order = 0}
+will gives the same results of the function \code{BoxPierce()}.
+The Monte-Carlo version of this test statistic is implemented in the
+function \code{portest()} as an argument \code{test = "BoxPierce"} provided
+that \code{MonteCarlo = TRUE} is selected.
+
+\begin{verbatim}
+portest(obj, lags = seq(5, 30, 5), order = 0, test = "BoxPierce", MonteCarlo = TRUE,
+       nslaves = 1, NREP = 1000, InfiniteVarianceQ = FALSE, SquaredQ = FALSE)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 1]{Example 1}
+\label{Example1}
+
+First a simple univariate example is provided. We fit an \AR(2) model to the logarithms of
+Canadian lynx trappings from 1821 to 1934.
+Data is available from the \proglang{R} package \pkg{datasets} under the name
+\code{lynx}.
+This model was selected using the \BIC criterion.
+The asymptotic distribution and the Monte-Carlo version of $Q_m$ statistic
+are given in the following \proglang{R} code for
+lags $m = 5, 10, 15, 20, 25, 30$ with \pkg{snow} package using PC with two CPU's.
+
+\begin{Schunk}
+\begin{Sinput}
+R> library("portes")
+R> library("snow")
+R> nslaves <- 2
+R> lynxData <- log(lynx)
+R> p <- SelectModel(lynxData, ARModel = "AR", Criterion = "BIC",
++     Best = 1)
+R> Fitlynx <- FitAR(lynxData, p, ARModel = "AR")
+R> BoxPierce(Fitlynx)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic df    p-value
+    5  6.748225  3 0.08037069
+   10 15.856081  8 0.04448698
+   15 22.631444 13 0.04631764
+   20 30.304179 18 0.03459211
+   25 34.157210 23 0.06291892
+   30 37.963103 28 0.09909886
+\end{Soutput}
+\begin{Sinput}
+R> portest(Fitlynx, test = "BoxPierce", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic df    p-value
+    5  6.748225  3 0.08491508
+   10 15.856081  8 0.03296703
+   15 22.631444 13 0.02597403
+   20 30.304179 18 0.02197802
+   25 34.157210 23 0.03296703
+   30 37.963103 28 0.04395604
+\end{Soutput}
+\end{Schunk}
+
+For lags $m \geq 10$, the Monte-Carlo version of Box and Pierce test is
+more decisively suggests model inadequacy, whereas the asymptotic chi-square
+suggests inadequacy at lags $10$ to $20$ and adequacy otherwise.
+Fitting a subset autoregressive using the \BIC \citep{McLeodZhangPaper2008},
+the portmanteau test based on both methods, Monte-Carlo and asymptotic distribution
+suggest model adequacy.
+
+\begin{Schunk}
+\begin{Sinput}
+R> SelectModel(log(lynx), lag.max = 15, ARModel = "ARp", Criterion = "BIC",
++     Best = 1)
+\end{Sinput}
+\begin{Soutput}
+[1]  1  2  4 10 11
+\end{Soutput}
+\begin{Sinput}
+R> FitsubsetAR <- FitARp(log(lynx), c(1, 2, 4, 10, 11))
+R> BoxPierce(FitsubsetAR)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic df   p-value
+    5  2.382300  0        NA
+   10  4.258836  0        NA
+   15  6.532786  4 0.1627363
+   20  9.887818  9 0.3596432
+   25 13.258935 14 0.5062439
+   30 16.172499 19 0.6457394
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitsubsetAR, test = "BoxPierce", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic df   p-value
+    5  2.382300  0 0.5224775
+   10  4.258836  0 0.7742258
+   15  6.532786  4 0.8311688
+   20  9.887818  9 0.7992008
+   25 13.258935 14 0.7852148
+   30 16.172499 19 0.7752248
+\end{Soutput}
+\end{Schunk}
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 2]{Example 2}
+\label{Example2}
+
+In this example we consider the
+monthly log stock returns of Intel corporation data from January 1973 to December 2003.
+First we apply the $Q_m$ statistic directly on the returns using the
+asymptotic distribution and the Monte-Carlo significance test.
+The results suggest that returns data behaves like white noise series as no
+significant serial correlations found.
+
+\begin{Schunk}
+\begin{Sinput}
+R> monthintel <- as.ts(monthintel)
+R> BoxPierce(monthintel)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic df    p-value
+    5  4.666889  5 0.45786938
+   10 14.364748 10 0.15699489
+   15 23.120348 15 0.08161787
+   20 24.000123 20 0.24238680
+   25 29.617977 25 0.23891229
+   30 31.943703 30 0.37015020
+\end{Soutput}
+\begin{Sinput}
+R> portest(monthintel, test = "BoxPierce", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic df   p-value
+    5  4.666889  5 0.4385614
+   10 14.364748 10 0.1518482
+   15 23.120348 15 0.0979021
+   20 24.000123 20 0.2157842
+   25 29.617977 25 0.2307692
+   30 31.943703 30 0.3166833
+\end{Soutput}
+\end{Schunk}
+
+After that we apply the $Q_m$ statistic on the squared returns.
+The results suggest that the monthly returns are not serially independent
+and the return series may suffers of \ARCH effects.
+
+\begin{Schunk}
+\begin{Sinput}
+R> BoxPierce(monthintel, SquaredQ = TRUE)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic df      p-value
+    5  40.78073  5 1.039009e-07
+   10  49.57872 10 3.189915e-07
+   15  81.90133 15 3.131517e-11
+   20  86.50575 20 3.006796e-10
+   25  87.54737 25 7.161478e-09
+   30  88.55017 30 1.087505e-07
+\end{Soutput}
+\begin{Sinput}
+R> portest(monthintel, test = "BoxPierce", nslaves = nslaves, SquaredQ = TRUE)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic df     p-value
+    5  40.78073  5 0.000999001
+   10  49.57872 10 0.000999001
+   15  81.90133 15 0.000999001
+   20  86.50575 20 0.000999001
+   25  87.54737 25 0.000999001
+   30  88.55017 30 0.000999001
+\end{Soutput}
+\end{Schunk}
+
+%%%%%%%%%%%%%%%%%%%
+\section[Ljung and Box portmanteau tests]{Ljung and Box portmanteau test}
+\label{LjungBoxTest}
+
+\citet{LjungBox1978} modified \citet{BoxPierce1970} test statistic by
+\begin{equation}\label{LjungBoxEqn}
+\Hat{Q}_m=n(n+2)\sum_{\ell=1}^{m}(n-\ell)^{-1}\Hat{r}_{\ell}^{2}.
+\end{equation}
+This test statistic is is also asymptotically chi-square with degrees of
+freedom $k^2(m-p-q)$ and implemented in the \proglang{R}
+function \code{LjungBox()},
+
+\begin{verbatim}
+LjungBox(obj, lags = seq(5, 30, 5), order = 0, SquaredQ = FALSE),
+\end{verbatim}
+
+where the arguments of this function are described as before.
+
+In \proglang{R}, the function \code{Box.test()} was built to compute
+the \citet{BoxPierce1970} and \citet{LjungBox1978} test statistics
+only in the univariate case where we can not use more than one single lag value at a time.
+The functions \code{BoxPierce()} and \code{LjungBox()} are more general than
+\code{Box.test()} and can be used in the univariate or multivariate time series
+at vector of different lag values as well as they can be applied on an output object from a fitted model.
+
+Note that the function \code{portest()} with the arguments
+\code{test = "LjungBox", MonteCarlo = FALSE}, and \code{order = 0}
+will gives the same results of the function \code{LjungBox()}.
+The Monte-Carlo version of this test statistic is implemented in the
+function \code{portest()} as an argument \code{test = "LjungBox"} provided
+that \code{MonteCarlo = TRUE} is selected.
+
+\begin{verbatim}
+portest(obj, lags = seq(5, 30, 5), order = 0, test = "LjungBox", MonteCarlo = TRUE,
+       nslaves = 1, NREP = 1000, InfiniteVarianceQ = FALSE, SquaredQ = FALSE)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 3]{Example 3}
+\label{Example3}
+
+The built in \proglang{R} function \code{auto.arima()} in the package \pkg{forecast}
+is used to fit the best \ARIMA model based on the \AIC criterion to
+the measurements of the annual flow of the river Nile at Aswan from the years 1871 to 1970,
+
+\begin{Schunk}
+\begin{Sinput}
+R> library("forecast")
+\end{Sinput}
+\begin{Sinput}
+R> FitNile <- auto.arima(Nile)
+\end{Sinput}
+\end{Schunk}
+Then the \code{LjungBox} portmanteau test is applied on the residuals
+of the fitted model at lag values 5, 10, 15, 20, 25, and 30 which yields that the assumption
+of the adequacy in the fitted model is fail to reject.
+
+\begin{Schunk}
+\begin{Sinput}
+R> LjungBox(FitNile)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic df   p-value
+    5  1.257698  3 0.7392018
+   10  9.705584  8 0.2863011
+   15 11.415751 13 0.5760319
+   20 12.861450 18 0.7997373
+   25 14.437766 23 0.9136466
+   30 17.395015 28 0.9403734
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitNile, test = "LjungBox", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic df   p-value
+    5  1.257698  3 0.8521479
+   10  9.705584  8 0.3256743
+   15 11.415751 13 0.6023976
+   20 12.861450 18 0.8211788
+   25 14.437766 23 0.9200799
+   30 17.395015 28 0.9370629
+\end{Soutput}
+\end{Schunk}
+
+%%%%%%%%%%%%%%%%%%%
+\section[Hosking portmanteau tests]{Hosking portmanteau test}
+\label{HoskingTest}
+
+\citet{Hosking1980} generalized the univariate portmanteau test statistics
+given in eqns. (\ref{BoxPierceEqn}, \ref{LjungBoxEqn}) to the multivariate case.
+He suggested the modified multivariate portmanteau test statistic
+
+\begin{equation}\label{ModifiedMVTestHosking}
+\Tilde{Q}_m=n^{2}\sum_{\ell=1}^{m}(n-\ell)^{-1}{\bm{\Hat{r}}_\ell}^{\prime}
+({\bm{\Hat{R}}_{0}}^{-1}\otimes{\bm{\Hat{R}}_{0}}^{-1})\bm{\Hat{r}}_\ell
+\end{equation}
+
+where
+$\bm{\Hat{r}}_\ell=\text{vec}{\bm{\Hat{R}}_\ell}^{\prime}$ is a $1\times k^2$ row
+vector with rows of $\bm{\Hat{R}}_\ell$ stacked
+one next to the other, and $m$ is the lag order.
+The $\otimes$ denotes the Kronecker product (\url{http://en.wikipedia.org/wiki/Kronecker_product}),
+$ \bm{\Hat{R}}_\ell={\bm{L}}^{\prime}\bm{\Hat{\Gamma}}_\ell\bm{L}$, $\bm{LL}^{\prime}={\bm{\Hat{\Gamma}}_{0}}^{-1}$
+where $\bm{\Hat{\Gamma}}_\ell=n^{-1}\sum_{t=\ell+1}^{n}\bm{\Hat{a}}_{t}{\bm{\Hat{a}}_{t-\ell}}^{\prime}$
+is the lag $\ell$ residual autocovariance matrix.
+
+The asymptotic distributions of $\Tilde{Q}_m$ is chi-squared with $k^2(m-p-q)$ degrees of freedom.
+In \pkg{portest} package, this statistic is implemented in the function
+\code{Hosking()}:
+
+\begin{verbatim}
+Hosking(obj, lags = seq(5, 30, 5), order = 0, SquaredQ = FALSE),
+\end{verbatim}
+
+where the arguments of this function is described as before.
+Note that the function \code{portest()} with the arguments
+\code{test = "Hosking", MonteCarlo = FALSE}, and \code{order = 0}
+will gives the same results of the function \code{Hosking()}.
+The Monte-Carlo version of this test statistic is implemented in the
+function \code{portest()} as an argument \code{test = "Hosking"} provided
+that \code{MonteCarlo = TRUE} is selected.
+
+\begin{verbatim}
+portest(obj, lags = seq(5, 30, 5), order = 0, test = "Hosking", MonteCarlo = TRUE,
+       nslaves = 1, NREP = 1000, InfiniteVarianceQ = FALSE, SquaredQ = FALSE)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 4]{Example 4}
+\label{Example4}
+
+In this example, we consider fitting a \VAR$(k), k=1,2,3$ model to
+the monthly log returns of the IBM stock and the S$\&$P 500 index from
+January $1926$ to December $1999$ with $888$ observations \citep[p. 356]{Tsay2005}.
+The p-values for the modified portmanteau test of
+\citet{Hosking1980}, $\Tilde{Q}_m$,
+are computed using the Monte-Carlo
+test procedure with $10^3$ replications.
+For additional comparisons, the p-values for $\Tilde{Q}_m$
+are also evaluated using asymptotic approximations.
+
+\begin{Schunk}
+\begin{Sinput}
+R> IBMSP500 <- monthibmspln
+R> FitIBMSP5001 <- ar.ols(IBMSP500, aic = TRUE, intercept = F, order.max = 1)
+R> Hosking(FitIBMSP5001)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic  df      p-value
+    5  38.33044  16 0.0013574550
+   10  61.42150  36 0.0051949240
+   15  72.97170  56 0.0633819777
+   20 118.87159  76 0.0012179623
+   25 152.37966  96 0.0002208340
+   30 171.72563 116 0.0006001655
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5001, test = "Hosking", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic  df     p-value
+    5  38.33044  16 0.002997003
+   10  61.42150  36 0.003996004
+   15  72.97170  56 0.072927073
+   20 118.87159  76 0.003996004
+   25 152.37966  96 0.000999001
+   30 171.72563 116 0.002997003
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R> FitIBMSP5002 <- ar.ols(IBMSP500, aic = TRUE, intercept = F, order.max = 2)
+R> Hosking(FitIBMSP5002)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic  df     p-value
+    5  28.12271  12 0.005307838
+   10  50.23144  32 0.021174563
+   15  61.53279  52 0.171676954
+   20 104.28887  72 0.007697842
+   25 138.24856  92 0.001303988
+   30 156.56512 112 0.003487092
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5002, test = "Hosking", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic  df     p-value
+    5  28.12271  12 0.003996004
+   10  50.23144  32 0.020979021
+   15  61.53279  52 0.145854146
+   20 104.28887  72 0.013986014
+   25 138.24856  92 0.001998002
+   30 156.56512 112 0.005994006
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R> FitIBMSP5003 <- ar.ols(IBMSP500, aic = TRUE, intercept = F, order.max = 3)
+R> Hosking(FitIBMSP5003)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic  df     p-value
+    5  18.08797   8 0.020576519
+   10  40.78971  28 0.056135837
+   15  52.21967  48 0.313383239
+   20  93.82650  68 0.020716599
+   25 124.25318  88 0.006631765
+   30 142.81916 108 0.013972657
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5003, test = "Hosking", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic  df     p-value
+    5  18.08797   8 0.029970030
+   10  40.78971  28 0.053946054
+   15  52.21967  48 0.307692308
+   20  93.82650  68 0.023976024
+   25 124.25318  88 0.004995005
+   30 142.81916 108 0.018981019
+\end{Soutput}
+\end{Schunk}
+
+All results reject the fitted \VAR$(1)$, \VAR$(2)$ and \VAR$(3)$ models.
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 5]{Example 5}
+\label{Example5}
+
+The trivariate quarterly time series, 1960--1982, of West German investment, income, and consumption
+was discussed by \citet[\S 3.23]{Lutkepohl2005}.
+So $n=92$ and $k=3$ for this series.
+As in \citet[\S 4.24]{Lutkepohl2005} we model the logarithms of the first differences.
+Using the \AIC and \FPE, \citet[Table 4.25]{Lutkepohl2005} selected a \VAR$(2)$
+for this data.
+All diagnostic tests reject simple randomness, \VAR$(0)$.
+The asymptotic distribution and the Monte-Carlo tests for \VAR$(1)$ suggests model inadequacy
+supports the choice of the \VAR$(2)$ model.
+
+\begin{Schunk}
+\begin{Sinput}
+R> data("WestGerman")
+R> DiffData <- matrix(numeric(3 * 91), ncol = 3)
+R> for (i in 1:3) DiffData[, i] <- diff(log(WestGerman[, i]), lag = 1)
+R> FitWestGerman <- ar.ols(DiffData, aic = FALSE, order.max = 2,
++     intercept = FALSE)
+R> Hosking(FitWestGerman)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic  df   p-value
+    5  30.36128  27 0.2981674
+   10  71.94191  72 0.4797610
+   15 122.49894 117 0.3455266
+   20 171.96132 162 0.2811881
+   25 209.45688 207 0.4391932
+   30 254.48482 252 0.4443308
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitWestGerman, test = "Hosking", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic  df   p-value
+    5  30.36128  27 0.3796204
+   10  71.94191  72 0.5064935
+   15 122.49894 117 0.3546454
+   20 171.96132 162 0.2667333
+   25 209.45688 207 0.4265734
+   30 254.48482 252 0.4235764
+\end{Soutput}
+\end{Schunk}
+
+%%%%%%%%%%%%%%%%%%%
+\section[Li and McLeod portmanteau tests]{Li and McLeod portmanteau test}
+\label{LiMcLeodTest}
+
+\citet{LiMcLeod1981} suggested the multivariate modified portmanteau test statistic
+
+\begin{equation}\label{ModifiedMVTestLiMcLeod}
+\Tilde{Q}^{(L)}_{m}=n\sum_{\ell=1}^{m}{\bm{\Hat{r}}_\ell}^{\prime}
+                   ({\bm{\Hat{R}}_{0}}^{-1}\otimes{\bm{\Hat{R}}_{0}}^{-1})
+                   \bm{\Hat{r}}_\ell+ \frac{k^{2}m(m+1)}{2n}
+\end{equation}
+
+which is distributed as chi-squared with $k^2(m-p-q)$ degrees of freedom.
+In \pkg{portes} package, the test statistic $\Tilde{Q}^{(L)}_{m}$ is
+implemented in the function \code{LiMcLeod()},
+
+\begin{verbatim}
+LiMcLeod(obj, lags = seq(5, 30, 5), order = 0, SquaredQ = FALSE),
+\end{verbatim}
+
+where the arguments of this function is described as before.
+
+Note that the function \code{portest()} with the arguments
+\code{test = "LiMcLeod", MonteCarlo = FALSE}, and \code{order = 0}
+will gives the same results of the function \code{LiMcLeod()}.
+The Monte-Carlo version of this test statistic is implemented in the
+function \code{portest()} as an argument \code{test = "LiMcLeod"} provided
+that \code{MonteCarlo = TRUE} is selected.
+
+\begin{verbatim}
+portest(obj, lags = seq(5, 30, 5), order = 0, test = "LiMcLeod", MonteCarlo = TRUE,
+       nslaves = 1, NREP = 1000, InfiniteVarianceQ = FALSE, SquaredQ = FALSE)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%
+\section[Generalized variance portmanteau test]{Generalized variance portmanteau test}
+\label{GeneralizedVarianceTest}
+
+\citet{PR2002} proposed a univariate portmanteau test of goodness-of-fit test based on the $m$-th root of the
+determinant of the $m$-th Toeplitz residual autocorrelation matrix
+
+\begin{equation}\label{PenaRodrigueztoeplitz}
+      \mathcal{\hat{R}}_{\mathit{m}}=\left(%
+\begin{array}{cccc}
+  \hat{r}_{0} & \hat{r}_{1} & \ldots & \hat{r}_{m} \\
+  \hat{r}_{-1} & \hat{r}_{0} & \ldots &\hat{r}_{m-1} \\
+  \vdots & \ldots & \ddots &  \vdots  \\
+  \hat{r}_{-m}  & \hat{r}_{-m+1} & \dots & \hat{r}_{0} \\
+\end{array}%
+\right)
+\end{equation}
+where $\hat{r}_{0}=1$ and $\hat{r}_{-\ell}=\hat{r}_{\ell},$ for all $\ell$.
+They approximated the distribution of their proposed test statistic by the gamma distribution
+and provided simulation experiments to demonstrate the improvement
+of their statistic in comparison with the one that is given in Eq.~(\ref{LjungBoxEqn}).
+
+\citet{PR2006} suggested to modify this test by taking the log of the $(m+1)$-th root of the determinant in
+Eq.~(\ref{PenaRodrigueztoeplitz}).
+They proposed two approximations by using the Gamma and Normal distributions to
+the asymptotic distribution of this test and
+indicated that the performance of both approximations for checking the
+goodness-of-fit in linear models is similar and more powerful
+for small sample size than the previous one.
+\citet{LinMcLeod2006} introduced the Monte-Carlo version of this test
+as they noted that it is quite often that
+the generalized variance portmanteau test does not
+agree with the suggested Gamma approximation.
+\citet{MahdiMcLeod2011} generalized both methods to the multivariate time series,
+\begin{equation}\label{MahdiMcLoed}
+\mathfrak{D}_m = \frac{-3n}{2m+1}\log\mid \bm{\mathfrak{\hat{R}}}_{\mathit{m}}\mid,
+\end{equation}
+where
+\begin{equation}\label{GV.mat1}
+      \bm{\mathfrak{\hat{R}}}_\mathit{m} = \left(%
+\begin{array}{cccc}
+  \mathbb{I}_k & \bm{\Hat{R}}_{1} & \ldots & \bm{\Hat{R}}_{\mathit{m}} \\
+  \bm{\Hat{R}}_{-1} & \mathbb{I}_k & \ldots &\bm{\Hat{R}}_{\mathit{m}-1} \\
+  \vdots & \ldots & \ddots &  \vdots  \\
+  \bm{\Hat{R}}_{-\mathit{m}} & \bm{\Hat{R}}_{-\mathit{m}+1}& \dots & \mathbb{I}_k \\
+\end{array}%
+\right).
+\end{equation}
+
+The null distribution is approximately
+$\chi^{2}$ with ${k^2(1.5m(m+1)(2m+1)^{-1}-p-q)}$ degrees of freedom and it
+is implemented in the \proglang{R} function \code{gvtest()},
+
+\begin{verbatim}
+gvtest(obj, lags = seq(5, 30, 5), order = 0, SquaredQ = FALSE),
+\end{verbatim}
+
+where the arguments of this function are described as before.
+
+Note that the function \code{portest()} with the arguments
+\code{test = "gvtest", MonteCarlo = FALSE}, and \code{order = 0}
+will gives the same results of the function \code{gvtest()}.
+The Monte-Carlo version of this test statistic is implemented in the
+function \code{portest()} as an argument \code{test = "gvtest"} provided
+that \code{MonteCarlo = TRUE} is selected.
+
+\begin{verbatim}
+portest(obj, lags = seq(5, 30, 5), order = 0, test = "gvtest", MonteCarlo = TRUE,
+       nslaves = 1, NREP = 1000, InfiniteVarianceQ = FALSE, SquaredQ = FALSE)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 6]{Example 6}
+\label{Example6}
+
+Consider again the log numbers of Canadian lynx trappings univariate series
+from 1821 to 1934, where the \AR(2) model is selected
+based on the \BIC criterion using the function
+\code{SelectModel} in the \proglang{R} package \pkg{FitAR} as a first step in the analysis.
+Now, we apply the statistic $\mathfrak{D}_m$ on the fitted model based on
+the asymptotic distribution and the Monte-Carlo significance test,
+
+\begin{Schunk}
+\begin{Sinput}
+R> gvtest(Fitlynx)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic        df     p-value
+    5  5.984989  2.090909 0.054687987
+   10 10.036630  5.857143 0.115222212
+   15 21.447021  9.612903 0.014964682
+   20 31.810564 13.365854 0.003100578
+   25 38.761595 17.117647 0.002040281
+   30 43.936953 20.868852 0.002252062
+\end{Soutput}
+\begin{Sinput}
+R> portest(Fitlynx, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic        df     p-value
+    5  5.984989  2.090909 0.063936064
+   10 10.036630  5.857143 0.080919081
+   15 21.447021  9.612903 0.006993007
+   20 31.810564 13.365854 0.002997003
+   25 38.761595 17.117647 0.000999001
+   30 43.936953 20.868852 0.000999001
+\end{Soutput}
+\end{Schunk}
+
+After that, we fit the subset autoregressive \AR$_{(1, 2, 4, 10, 11)}$
+using the \BIC and then we apply $\mathfrak{D}_m$ as before,
+
+\begin{Schunk}
+\begin{Sinput}
+R> gvtest(FitsubsetAR)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic         df     p-value
+    5  2.374225  0.0000000          NA
+   10  3.598248  0.0000000          NA
+   15  5.661285  0.6129032 0.008190694
+   20  8.590962  4.3658537 0.090004731
+   25 11.462473  8.1176471 0.184353957
+   30 13.900470 11.8688525 0.297764350
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitsubsetAR, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic         df   p-value
+    5  2.374225  0.0000000 0.3476523
+   10  3.598248  0.0000000 0.6703297
+   15  5.661285  0.6129032 0.7152847
+   20  8.590962  4.3658537 0.6953047
+   25 11.462473  8.1176471 0.6663337
+   30 13.900470 11.8688525 0.6793207
+\end{Soutput}
+\end{Schunk}
+
+However the approximation asymptotic distribution of the statistic $\mathfrak{D}_m$
+suggests that the subset \AR model is an adequate model for lags $m\geq 20$, the
+Monte-Carlo portmanteau test is
+clearly suggest that the subset \AR model is an adequate model.
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 7]{Example 7}
+\label{Example7}
+
+consider again fitting a \VAR$(k), k=1,2,3$ model to
+the monthly log returns of the IBM stock and the S$\&$P 500 index from
+January $1926$ to December $1999$ with $888$ observations \citep[p. 356]{Tsay2005}.
+
+\begin{Schunk}
+\begin{Sinput}
+R> gvtest(FitIBMSP5001)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic       df     p-value
+    5  26.73298 12.36364 0.010069145
+   10  50.16580 27.42857 0.005076554
+   15  66.95921 42.45161 0.009606334
+   20  87.59443 57.46341 0.006384252
+   25 108.82328 72.47059 0.003699716
+   30 128.30068 87.47541 0.002940363
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5001, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic       df     p-value
+    5  26.73298 12.36364 0.002997003
+   10  50.16580 27.42857 0.003996004
+   15  66.95921 42.45161 0.006993007
+   20  87.59443 57.46341 0.004995005
+   25 108.82328 72.47059 0.005994006
+   30 128.30068 87.47541 0.003996004
+\end{Soutput}
+\begin{Sinput}
+R> gvtest(FitIBMSP5002)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic        df    p-value
+    5  16.24518  8.363636 0.04647938
+   10  38.00564 23.428571 0.02910435
+   15  54.26122 38.451613 0.04688480
+   20  74.35787 53.463415 0.03091912
+   25  95.55057 68.470588 0.01701104
+   30 114.96754 83.475410 0.01272103
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5002, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic        df     p-value
+    5  16.24518  8.363636 0.006993007
+   10  38.00564 23.428571 0.007992008
+   15  54.26122 38.451613 0.016983017
+   20  74.35787 53.463415 0.017982018
+   25  95.55057 68.470588 0.008991009
+   30 114.96754 83.475410 0.008991009
+\end{Soutput}
+\begin{Sinput}
+R> gvtest(FitIBMSP5003)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic        df    p-value
+    5  6.914649  4.363636 0.16977954
+   10 24.655501 19.428571 0.18989321
+   15 39.324113 34.451613 0.26078729
+   20 58.297021 49.463415 0.18238250
+   25 79.102500 64.470588 0.10384117
+   30 98.361967 79.475410 0.07416598
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitIBMSP5003, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic        df    p-value
+    5  6.914649  4.363636 0.05394605
+   10 24.655501 19.428571 0.06493506
+   15 39.324113 34.451613 0.11488511
+   20 58.297021 49.463415 0.08891109
+   25 79.102500 64.470588 0.06093906
+   30 98.361967 79.475410 0.04995005
+\end{Soutput}
+\end{Schunk}
+
+While the fitted \VAR(1) and \VAR(2) models are rejected,
+the $\mathfrak{D}_m$ diagnostic suggests that the fitted \VAR(3) maybe
+consider to be an adequate model.
+
+
+%%%%%%%%%%%%%%%%%%%
+\subsection[Example 8]{Example 8}
+\label{Example8}
+
+In this example, we consider the quarterly time series, 1960--1982,
+of West German investment, income, and consumption studied before.
+
+We apply the statistic $\mathfrak{D}_m$ on the fitted \VAR(2) model based on
+the asymptotic distribution and the Monte-Carlo significance test,
+
+\begin{Schunk}
+\begin{Sinput}
+R> gvtest(FitWestGerman)
+\end{Sinput}
+\begin{Soutput}
+ Lags Statistic        df      p-value
+    5  20.90960  18.81818 0.3310522834
+   10  52.17337  52.71429 0.4951413528
+   15  91.80348  86.51613 0.3283404972
+   20 135.40962 120.29268 0.1637652676
+   25 195.17389 154.05882 0.0139543395
+   30 257.76048 187.81967 0.0005343724
+\end{Soutput}
+\begin{Sinput}
+R> portest(FitWestGerman, test = "gvtest", nslaves = nslaves)
+\end{Sinput}
+\begin{Soutput}
+	2 slaves are spawned successfully. 0 failed.
+ Lags Statistic        df   p-value
+    5  20.90960  18.81818 0.3116883
+   10  52.17337  52.71429 0.5424575
+   15  91.80348  86.51613 0.5624376
+   20 135.40962 120.29268 0.5954046
+   25 195.17389 154.05882 0.4005994
+   30 257.76048 187.81967 0.3486513
+\end{Soutput}
+\end{Schunk}
+
+Using the asymptotic distribution,
+results suggest that the \VAR(2) model is adequate at lags
+$m<25$ and inadequate at lags $m\geq 25$,
+whereas Monte-Carlo test supports the choice of the \VAR$(2)$ model.
+
+
+\bibliography{portesV}
+
+\end{document}
+
+
+
+
+
+

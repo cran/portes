@@ -1,4 +1,4 @@
-"blockToeplitz" <- 
+"ToeplitzBlock" <- 
 function(res,lag.max)
 {
      res <- as.matrix(res)

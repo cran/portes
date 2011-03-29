@@ -22,22 +22,27 @@ Generate data from stable distribution with infinite variance.
 \details{
 \code{ALPHA, BETA, GAMMA,} and \code{DELTA} should have the same length. 
 This length, \eqn{k}, represents the number of the variables that we need to generate. 
+The code in the function \code{\link{rstable}} extends that one given in the package \code{fBasics} to the multivariate case.
+Many thanks to Diethelm Wuertz for putting his code under the \code{GPL} license.
 }
 
 \value{
 A vector of dimension \eqn{n\times k} from independent stable distributions.
 }
 
-\author{ Esam Mahdi & A.I. McLeod.}
+\author{ Esam Mahdi and A.I. McLeod.}
 
 \references{
 Chambers, J.M., Mallows, C.L., and Stuck, B.W. (1976). "A Method for Simulating Stable Random Variables".
 Journal of American Statistical Association, 71, 340-344.
+
+Wuertz, D., core team members R (2010). "fBasics: Rmetrics - Markets and Basic Statistics".
+\url{http://CRAN.R-project.org/package=fBasics}
 }
 
 \seealso{
 There is also a function \code{rstable} in the \code{fBasics} package for the univariate case only. 
-See also \code{\link{FitStable}}, \code{\link{simvarma}}
+See also \code{\link{fitstable}}, \code{\link{varima.sim}}
 }
 
 \examples{
@@ -53,7 +58,7 @@ n <- 500
 ALPHA <- c(1.3,1.5)
 BETA <- c(0.3,-0.6)
 rstable(n, ALPHA, BETA)  
-## Generate Multivariate Data with 
+## Generate Multivariate Data
 n <- 500
 ALPHA <- c(1.3,1.5,1.7)
 BETA <- c(0.3,-0.6,0)

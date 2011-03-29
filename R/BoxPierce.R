@@ -3,15 +3,15 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
      TestType<-"0"
      if (class(obj)=="ts"||class(obj)=="numeric"||class(obj)=="matrix"||(class(obj)[1]=="mts" && class(obj)[2]=="ts"))
            TestType<-"1"
-    if (class(obj) == "ar" || class(obj) == "Arima" || class(obj) == "arima0" || class(obj) == "FitAR" || class(obj) == "FitFGN") 
+     if (class(obj) == "ar" || class(obj) == "arima0" || class(obj) == "Arima" || class(obj) == "varest" || class(obj) == "FitAR" || class(obj) == "FitFGN") 
            TestType<-"2"
     if (TestType == "0")
-           stop("obj must be class ar, Arima, arima0, FitAR, FitFGN, ts, numeric, matrix, or (mts ts)")
+           stop("obj must be class ar, arima0, Arima, varest, FitAR, FitFGN, ts, numeric, matrix, or (mts ts)")
     Maxlag <- max(lags)
     if (TestType=="1")
        res <- as.ts(obj)
      else{
-             GetResid <- Get.Resid(obj)
+             GetResid <- GetResiduals(obj)
              res <- GetResid$res
              order <- GetResid$order
       }
@@ -19,7 +19,8 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
        n <- NROW(res)
        k <- NCOL(res)
         df <- k^2*(lags-order)
-        df[which(df<0)] <- 0
+        NegativeDF <- which(df<0)
+        df[NegativeDF] <- 0
   	     Accmat <- acf(res, lag.max = Maxlag, plot = FALSE, type = "correlation")$acf
 	     inveseR0 <- solve(Accmat[1,,])
              prodvec <- numeric(Maxlag)
@@ -30,6 +31,7 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
        Q <- n*cumsum(prodvec)
        STATISTIC <- Q[lags]
        PVAL <- 1 - pchisq(STATISTIC,df)
+       PVAL[NegativeDF] <- NA
        summary <- matrix(c(lags,STATISTIC,df,PVAL),ncol=4)
        dimnames(summary) <- list(rep("", length(STATISTIC)),c("Lags","Statistic","df","p-value"))
     return(summary)

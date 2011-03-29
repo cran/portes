@@ -27,13 +27,9 @@ Tsay, R. S. (2005). "Analysis of Financial Time Series". Wiley, New York, 2nd ed
 }
 
 \examples{
-acf(monthibmspln$IBM)
-FitStable(monthibmspln$IBM)
-acf(monthibmspln$SP500)
-FitStable(monthibmspln$SP500)
-
+acf(monthibmspln)
+fitstable(monthibmspln)
 }
-
 
 \keyword{datasets}
 
