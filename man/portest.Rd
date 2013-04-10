@@ -112,7 +112,8 @@ portest(ans, NREP=100)
 # Simulate a bivariate VARIMA(1,c(0,0),1) process with length 300. 
 # Apply gvtest based on the two methods implemented in portes. 
 # 100 replications takes about 23.63 seconds on single cpu 2.67 GHz.
-##
+##about 6 seconds
+\dontrun{
 k <- 2
 n <- 300
 Trunc.Series <-  50   
@@ -124,6 +125,7 @@ z <- varima.sim(phi,theta,d,sigma,n)
 ans <- ar(z)                  
 portest(ans, MonteCarlo=FALSE)  ## asymptotic distribution method
 portest(ans, NREP=100)          ## Monte-Carlo method
+}
 ##
 ###############################################################
 ## Example 3

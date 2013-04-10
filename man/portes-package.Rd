@@ -18,8 +18,8 @@ The simulated data may have deterministic terms, a constant drift and a time tre
 \tabular{ll}{
 Package: \tab portes\cr
 Type: \tab Package\cr
-Version: \tab 1.07\cr
-Date: \tab 2011-03-29\cr
+Version: \tab 1.08\cr
+Date: \tab 2013-04-10\cr
 LazyLoad: \tab yes\cr
 LazyData: \tab yes\cr
 Depends: \tab FitAR, akima \cr
@@ -27,7 +27,7 @@ Suggests: \tab FGN, forecast, vars, snow \cr
 Recommends: \tab rlecuyer \cr
 Classification/ACM: G.3, G.4, I.5.1\cr
 Classification/MSC: 62M10, 91B84\cr
-License: GPL (>= 2)\cr
+License: CC BY-NC-SA 3.0
 }
 }
 

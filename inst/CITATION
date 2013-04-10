@@ -1,0 +1,21 @@
+citHeader("To cite `portes' in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Improved multivariate portmanteau diagnostic test",
+  author       = personList(
+                   	as.person("Esam Mahdi"),
+  			as.person("A. I. McLeod")),
+  journal      = "Journal of Time Series Analysis",
+  year         = "2012",
+  volume       = "33",
+  number       = "2",
+  pages	       = "211--222",
+  url          = "http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9892.2011.00752.x/abstract",
+
+  textVersion  =
+  paste("Mahdi, E. and McLeod, A. I. (2012).",
+        "Improved multivariate portmanteau diagnostic test.",
+        "Journal of Time Series Analysis 33/2,  211-222",
+        "URL http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9892.2011.00752.x/abstract")
+)
+
