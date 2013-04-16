@@ -35,10 +35,11 @@ Springer-Verlag, 2nd edition.
 }
 
 \seealso{ \code{\link[stats]{ARMAtoMA}}, \code{\link{varima.sim}}, \code{\link{vma.sim}}, 
-\code{\link{InvertQ}}, \code{\link{InvertibleQ}}
+\code{\link{InvertQ}}, \code{\link[FitAR]{InvertibleQ}}
 }
 
 \examples{
+\dontrun{
 #####################################################################
 ### Impulse response coefficients from AR(1,1) to infinite MA process. 
 ### The infinite process is truncated at lag 20
@@ -64,6 +65,7 @@ k <- 2
 phi <- array(c(0.5,0.4,0.1,0.5,0,0.25,0,0),dim=c(k,k,2))
 theta <- array(c(0.6,0,0.2,0.3),dim=c(k,k,1))
 ImpulseVMA(phi,theta,Trunc.Series=50)
+}
 }
 
 \keyword{ ts}

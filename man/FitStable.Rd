@@ -27,7 +27,7 @@ k represents the number of the variables in the vector x and the columns with na
 alpha, beta, scale, and location respectively. 
 }
 
-\author{A.I. McLeod, Jen-Wen Lin, and Esam Mahdi}
+\author{Esam Mahdi, A.I. McLeod, and Jen-Wen Lin}
 
 \references{
 Lin, J.-W. and McLeod A.I.(2008). 
@@ -37,23 +37,24 @@ Journal of Time Series Analysis, 29, 600-617.
 McCulloch, J. H. (1986). "Simple Consistent Estimator of Stable Distribution Parameters".
 Commun. Statist.--Simula., 15(4), 1109-1136.}
 
-\seealso{There is also a function \code{stableFit} in the \code{fBasics} package for fitting
-stable distributions for univariate data but it does not work very well. 
-This is the reason for \code{\link{fitstable}}. 
-See also \code{\link{rstable}}, \code{\link{varima.sim}}, 
+\seealso{There is also a function \code{stableFit()} in the \code{fBasics} package for fitting
+stable distributions for univariate data. 
+See also \code{\link{rStable}}, \code{\link{varima.sim}}, 
 }
 
 \examples{
+\dontrun{
 ## Univariate
-x <- rstable(800, 1.7, 0, 1, 0)
+x <- rStable(800, 1.7, 0, 1, 0)
 fitstable(x)
 ## Multivariate
 ALPHA <- c(1.3,1.6)
 BETA <- c(0,0.2)
 GAMMA <-c(1,1)
 DELTA <-c(0,0.2)
-x <- rstable(500, ALPHA, BETA, GAMMA, DELTA)
+x <- rStable(500, ALPHA, BETA, GAMMA, DELTA)
 fitstable(x)
+}
 }
 
 \keyword{distribution}

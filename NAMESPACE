@@ -1,3 +1,14 @@
+importFrom("stats", "ar")
+importFrom("stats", "ar.ols")
+importFrom("stats", "ar.burg")
+importFrom("stats", "ar.yw")
+importFrom("stats", "ar.mle")
+importFrom("stats", "arima")
+importFrom("stats", "arima0")
+importFrom("stats", "arima.sim")
+importFrom("stats", "acf")
+importFrom("stats", "pchisq")
+
 export(
 "BoxPierce",
 "fitstable",
@@ -9,8 +20,9 @@ export(
 "LiMcLeod",
 "LjungBox",
 "portest",
-"rstable",
+"rStable",
 "ToeplitzBlock",
 "varima.sim",
-"vma.sim")
+"vma.sim"
+)
 

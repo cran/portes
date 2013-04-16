@@ -116,11 +116,11 @@ structure(c(2, 2, 2, 2, 2, 1.9, 1.9, 1.9, 1.9, 1.9, 1.8, 1.8,
           aHat[i] <- 2
          else{
           vb1<-abs(qs1[5]+qs1[1]-2*qs1[3])/(qs1[5]-qs1[1])
-          aHat[i] <- interpp(MCTable3[,1],MCTable3[,2],MCTable3[,3],xo=va1,yo=vb1)$z
+          aHat[i] <- akima::interpp(MCTable3[,1],MCTable3[,2],MCTable3[,3],xo=va1,yo=vb1)$z
          }
-          bHat[i] <- sign(vb2)*min(interpp(MCTable4[,1],MCTable4[,2],MCTable4[,3],xo=va2,yo=abs(vb2))$z,1)
-          sigHat[i] <-diff(qs2)/interpp(MCTable5[,1],MCTable5[,2],MCTable5[,3],xo=aHat[i],yo=abs(bHat[i]))$z
-       g<-interpp(MCTable7[,1],MCTable7[,2],MCTable7[,3],xo=aHat[i],yo=abs(bHat[i]))$z
+          bHat[i] <- sign(vb2)*min(akima::interpp(MCTable4[,1],MCTable4[,2],MCTable4[,3],xo=va2,yo=abs(vb2))$z,1)
+          sigHat[i] <-diff(qs2)/akima::interpp(MCTable5[,1],MCTable5[,2],MCTable5[,3],xo=aHat[i],yo=abs(bHat[i]))$z
+       g<-akima::interpp(MCTable7[,1],MCTable7[,2],MCTable7[,3],xo=aHat[i],yo=abs(bHat[i]))$z
        sb<-sign(bHat[i])
        if ((aHat[i]-1)<aTolerance)
         muHat[i] <- sb*(M+sigHat[i]*g)

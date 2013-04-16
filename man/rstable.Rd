@@ -1,5 +1,5 @@
-\name{rstable}
-\alias{rstable}
+\name{rStable}
+\alias{rStable}
 
 \title{Generate Data From Stable Distributions}
 
@@ -8,7 +8,7 @@ Generate data from stable distribution with infinite variance.
 }
 
 \usage{
-    rstable(n, ALPHA, BETA, GAMMA = NULL, DELTA = NULL)
+    rStable(n, ALPHA, BETA, GAMMA = NULL, DELTA = NULL)
 }
 
 \arguments{
@@ -22,7 +22,7 @@ Generate data from stable distribution with infinite variance.
 \details{
 \code{ALPHA, BETA, GAMMA,} and \code{DELTA} should have the same length. 
 This length, \eqn{k}, represents the number of the variables that we need to generate. 
-The code in the function \code{\link{rstable}} extends that one given in the package \code{fBasics} to the multivariate case.
+The code in the function \code{\link{rStable}} extends that one given in the package \code{fBasics} to the multivariate case.
 Many thanks to Diethelm Wuertz for putting his code under the \code{GPL} license.
 }
 
@@ -36,8 +36,8 @@ A vector of dimension \eqn{n\times k} from independent stable distributions.
 Chambers, J.M., Mallows, C.L., and Stuck, B.W. (1976). "A Method for Simulating Stable Random Variables".
 Journal of American Statistical Association, 71, 340-344.
 
-Wuertz, D., core team members R (2010). "fBasics: Rmetrics - Markets and Basic Statistics".
-\url{http://CRAN.R-project.org/package=fBasics}
+Wuertz, D., core team members R (2012). "fBasics: Rmetrics - Markets and Basic Statistics".
+\code{R} package version 2160.85. \url{http://CRAN.R-project.org/package=fBasics}
 }
 
 \seealso{
@@ -52,18 +52,21 @@ ALPHA <- 1.75
 BETA <- 0
 GAMMA <- 1.5
 DELTA <- 0
-rstable(n, ALPHA, BETA, GAMMA, DELTA)                
+rStable(n, ALPHA, BETA, GAMMA, DELTA)                
+#to save time the other examples are not run
+\dontrun{
 ## Generate Bivariate Data  
 n <- 500
 ALPHA <- c(1.3,1.5)
 BETA <- c(0.3,-0.6)
-rstable(n, ALPHA, BETA)  
+rStable(n, ALPHA, BETA)  
 ## Generate Multivariate Data
 n <- 500
 ALPHA <- c(1.3,1.5,1.7)
 BETA <- c(0.3,-0.6,0)
 GAMMA <- c(3,1,6)
-rstable(n, ALPHA, BETA,GAMMA)  
+rStable(n, ALPHA, BETA,GAMMA)  
+}
 }
 
 \keyword{distribution}

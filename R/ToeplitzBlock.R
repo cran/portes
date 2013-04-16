@@ -6,7 +6,7 @@ function(res,lag.max)
      n <- NROW(res)
      m <- lag.max+1
      out <- matrix(numeric(k*m*k*(lag.max+1)),nrow=k*m,ncol=k*m)
-     Accmat <- acf(res, lag.max = lag.max, plot = FALSE, type = "covariance")$acf
+     Accmat <- stats::acf(res, lag.max = lag.max, plot = FALSE, type = "covariance")$acf
       inveseC0 <- solve(Accmat[1,,])
       L <- t(chol(inveseC0))
        for (i in 0:lag.max)

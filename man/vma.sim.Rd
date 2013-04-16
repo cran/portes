@@ -44,8 +44,6 @@ theta <-  array(c(0,0.25,0,0),dim=c(k,k,1))
 sigma <- matrix(c(1,0.71,0.71,2),k,k)
 p <- ifelse(is.null(phi),0,dim(phi)[3])
 q <- ifelse(is.null(theta),0,dim(theta)[3])
-epsilon <- t(crossprod(chol(sigma),matrix(rnorm(k*(n + q)),ncol=n + q)))
-Sim.Series <- matrix(numeric(0), nrow = n, ncol = k)
 r <- max(p, q)
 d <- Trunc.Series + r
 psi <- ImpulseVMA(phi = phi, theta = theta, Trunc.Series = Trunc.Series)

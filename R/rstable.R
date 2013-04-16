@@ -1,4 +1,4 @@
-"rstable" <- 
+"rStable" <- 
 function (n, ALPHA, BETA, GAMMA = NULL, DELTA = NULL) 
 {
     if (any(ALPHA > 2)) 
