@@ -83,7 +83,7 @@ function (phi = NULL, theta = NULL, d = NA, sigma, n, constant = NA,
                }
               else
                  InvertQ(theta) ## Simulate VMA(q)
-                 psi <- array(c(diag(k), -theta), dim = c(k, k, q + 1))
+                 psi <- array(c(diag(k), theta), dim = c(k, k, q + 1))
                  if(!is.null(innov))
                     epsilon <- ts(rbind(innov,as.matrix(innov[sample(x=1:n,size=q,replace=TRUE),])))
                  Sim.VMA <- vma.sim(psi = psi, a = epsilon)
@@ -124,7 +124,7 @@ function (phi = NULL, theta = NULL, d = NA, sigma, n, constant = NA,
             else if(is.null(innov)&& innov.dist == "stable")
                epsilon <- rbind(a,rStable(n, ALPHA, BETA, GAMMA, DELTA))
             if (q > 0) { ## Simulate VARMA(p,q)
-                extend.psi <- array(c(diag(k), -theta, rep(0, k * k *(n - q))), dim = c(k, k, n + 1))
+                extend.psi <- array(c(diag(k), theta, rep(0, k * k *(n - q))), dim = c(k, k, n + 1))
                 u <- matrix(numeric(0), nrow = n, ncol = k)
                 for (i in (q + 1):(n + q)) {
                    out <- 0

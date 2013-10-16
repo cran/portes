@@ -1,4 +1,4 @@
-42985ae05b96e7c323bec337f4dcecbe *DESCRIPTION
+49b8d223fa37dc0d4346ca7ae9fca138 *DESCRIPTION
 8dddbc6be2cfc03f0b689d084106236b *NAMESPACE
 053e1ad8bb8a6603b51ede2339191705 *R/BoxPierce.R
 f502bdb710a9d8fd7a4bbe46db86e430 *R/GetResiduals.R
@@ -12,7 +12,7 @@ d17109f7950f1670114b846a147b4e8a *R/ToeplitzBlock.R
 fd3efe6bf267db3e11d8cf2b6a107933 *R/gvtest.r
 74223d336f43166209b51fb963464a06 *R/portest.R
 f7440686a9ae8323842db597c7cbbf22 *R/rStable.R
-4e5d423b5c4091338b406552e1855f55 *R/varima.sim.R
+a93ff04c341f991cf2f34b992d67fe55 *R/varima.sim.R
 70eaa69a1f416da0f392292bd65a8bc0 *R/vma.sim.R
 032380a89268dee15053f4651ac98735 *data/CRSP.rda
 01862cef6f748e4ecda5ef97b74babfd *data/DEXCAUS.rda
@@ -39,7 +39,7 @@ a34c87c1922e2f231e00dd598a3bbbac *man/IbmSp500.Rd
 f66fa03a307a2581475306e0a88329ae *man/fitstable.Rd
 46bb5591d3532306fbd89d23869b6826 *man/gvtest.Rd
 4fb50a653e2b9c070516f24cb1e66012 *man/monthintel.Rd
-9d35547f4c9708e0c6788b8b23311961 *man/portes-package.Rd
+8c79a1c19442836b88191ff2356a23b2 *man/portes-package.Rd
 7a3d0b20123040b14637a815798a01f4 *man/portest.Rd
 b7abaa6574c934ffbcd6950e447f0c79 *man/rStable.Rd
 f65e97dfa8c3c8f9c141598c21cd9502 *man/varima.sim.Rd
