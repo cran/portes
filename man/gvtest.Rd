@@ -10,7 +10,7 @@ where \eqn{m} represents the order of the block matrix.
 }
 
 \usage{
-gvtest(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE)
+gvtest(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE,Kernel=FALSE)
 }
 
 \arguments{
@@ -31,6 +31,7 @@ gvtest(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE)
              This checks for Autoregressive Conditional Heteroscedastic, 
              \code{ARCH}, effects. 
              When \code{SquaredQ = FALSE}, then apply the test on the usual residuals. }
+  \item{Kernel}{logic. If \code{TRUE} then Parzen Kernel would be applied on the autocorrelation function for statistics. }
 }
 
 \details{
@@ -51,7 +52,7 @@ The generalized variance portmanteau test statistic and its associated p-values 
 chi-square as given in Mahdi and McLeod (2012).
 }
 
-\author{ Esam Mahdi and A.I. McLeod.}
+\author{ Esam Mahdi, Ken Jinkun Xiao and A.I. McLeod.}
 
 \references{
 Mahdi, E. and McLeod, A.I. (2012). "Improved Multivariate Portmanteau Test". 

@@ -19,7 +19,7 @@ The simulated data may have deterministic terms, a constant drift and a time tre
 \tabular{ll}{
 Package: \tab portes\cr
 Type: \tab Package\cr
-Version: \tab 2.1-1\cr
+Version: \tab 2.1-2\cr
 Date: \tab 2013-10-16\cr
 LazyLoad: \tab yes\cr
 LazyData: \tab yes\cr
@@ -400,7 +400,7 @@ plot(Z)
 }
 
 \author{
-Author: Esam Mahdi and A. Ian McLeod.
+Author: Esam Mahdi, Ken Jinkun Xiao  and A. Ian McLeod.
 
 Maintainer: A. Ian McLeod <aimcleod@uwo.ca> 
 }

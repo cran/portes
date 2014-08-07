@@ -42,6 +42,6 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
       PVAL <- 1 - stats::pchisq(STATISTIC,df)
       PVAL[NegativeDF] <- NA
        summary <- matrix(c(lags,STATISTIC,df,PVAL),ncol=4)
-       dimnames(summary) <- list(rep("", length(STATISTIC)),c("Lags","Statistic","df","p-value"))
+       dimnames(summary) <- list(rep("", length(STATISTIC)),c("Lags","Statistic","df","pvalue"))
     return(summary)
 }

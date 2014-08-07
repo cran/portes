@@ -9,20 +9,22 @@ This is needed for the function \code{\link{gvtest}}.
 }
 
 \usage{
-ToeplitzBlock(res,lag.max)
+ToeplitzBlock(res,lag.max,Kernel)
 }
 
 \arguments{
   \item{res}{residuals, numeric or matrix. }
   \item{lag.max}{an integer number = \eqn{m} is used to determined the order of the block matrix. }
-}
+  \item{Kernel}{Logic number. default = FALSE. Parzen Kernel would be used for the autocorrelation function if setting TRUE }
+ }
+
 
 \value{ 
 A block Toeplitz matrix of auto and cross correlation matrices using Hosking (1980) definition 
 from \code{lag} = \eqn{0} to \code{lag} = \eqn{m}.
 }
 
-\author{ Esam Mahdi and A.I. McLeod.}
+\author{ Esam Mahdi, Ken Jinkun Xiao  and A.I. McLeod.}
 
 \references{
 Hosking, J. R. M. (1980). "The Multivariate Portmanteau Statistic". 
@@ -33,6 +35,8 @@ Computational Statistics and Data Analysis, 51, 1731-1738.
 
 Mahdi, E. and McLeod, A.I. (2011, accepted). "Improved Multivariate Portmanteau Test". 
 Journal of Time Series Analysis. (JTSA - 3192).
+
+
 }
 
 \seealso{
@@ -43,10 +47,15 @@ Journal of Time Series Analysis. (JTSA - 3192).
 ## Univariate Series
 x <- rnorm(100)
 ToeplitzBlock(x,lag.max=4)
+## Univariate Series with Parzen Kernel
+x<-rnorm(100)
+ToeplitzBlock(x,lag.max=4,Kernel=TRUE)
+
 ## Multivariate Series
 x <- cbind(rnorm(100),rnorm(100))
 ToeplitzBlock(x,lag.max=4)
 }
+
 
 \keyword{array}
 

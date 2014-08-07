@@ -1,6 +1,6 @@
 "portest" <-
-function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
-        "Hosking","LiMcLeod"),MonteCarlo=TRUE,nslaves=1,NREP=1000,
+function (obj,lags=seq(5,30,5),order=0,test=c("PenaRodriguez","BoxPierce","LjungBox",
+        "Hosking","LiMcLeod"),MonteCarlo=TRUE,Kernel=FALSE,nworkers=1,NREP=1000,
         InfiniteVarianceQ=FALSE,SquaredQ=FALSE,
         func=list(SimModel=NULL, FitModel=NULL),pkg=NULL,SetSeed=TRUE)  
 {
@@ -31,7 +31,7 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
     n <- NROW(res)
     res <- matrix(res,ncol=k,nrow=n)
     if (MonteCarlo == FALSE){ 
-      if (test =="gvtest")
+      if (test =="PenaRodriguez")
         return(gvtest(res, lags, Order, SquaredQ))
       else if (test =="BoxPierce")
         return(BoxPierce(res, lags, Order, SquaredQ))  
@@ -43,9 +43,16 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
         return(LiMcLeod(res, lags, Order, SquaredQ)) 
    }           
     else {
-          if (test =="gvtest"){
+          if (test =="PenaRodriguez"){
+              if (Kernel==FALSE){
               ans <- gvtest(res, lags, Order, SquaredQ)
               obs.stat <- ans[, 2]
+              }
+              else
+              {
+                ans <- gvtest(res, lags, Order, SquaredQ,Kernel=TRUE)
+                obs.stat <- ans[, 2]
+              }
          }
          else if (test =="BoxPierce"){
              ans <- BoxPierce(res, lags, Order, SquaredQ)
@@ -296,9 +303,17 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   rboot <- ts(rStable(n, ALPHA, BETA, GAMMA,DELTA))
                 else
                   rboot <- res[sample(x=1:n,size=n,replace=TRUE, prob = NULL),]
-              if (test =="gvtest")
-                  OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[, 
+              if (test =="PenaRodriguez")
+              {
+                if (Kernel==FALSE){  
+                OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[, 
                   2]
+                }
+                else{
+                  OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[, 
+                                                                      2]
+                }
+              }
               else if (test =="BoxPierce")
                   OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[, 
                   2]
@@ -326,8 +341,15 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                     mean = demean)
                   FitSimModel <- stats::ar(Sim.Data, aic = FALSE, demean = Demean, order.max = p,method="yule-walker")
                   rboot <- FitSimModel$resid[-(1:p)]
-                  if (test =="gvtest")
-                   OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                  if (test =="PenaRodriguez"){
+                    if (Kernel==FALSE){
+                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                    else
+                    {
+                      OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]
+                    }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -352,8 +374,14 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   FitSimModel <- stats::ar.ols(Sim.Data, aic = FALSE, demean =Demean, intercept=intercept,
                     order.max = p)
                   rboot <- ts(as.matrix(FitSimModel$resid)[-(1:p),])
-                  if (test =="gvtest")
-                   OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                  if (test =="PenaRodriguez"){
+                    if (Kernel==FALSE){
+                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                    else {
+                      OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]   
+                    }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -385,8 +413,16 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   else if (Model == "3D") 
                     FitSimModel <- vars::VAR(Sim.Data, p = p, type = "both")
                   rboot <- resid(FitSimModel)
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){ 
                     OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                    else 
+                    {
+                      OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]
+                    }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -411,8 +447,16 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   else                             
                      FitSimModel <- stats::arima(Sim.Data, order = c(p,d,q))
                   rboot <- FitSimModel$resid
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){
                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                   else {
+                     OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]
+                   }
+                  
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -439,8 +483,15 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                         }
                   else #must be AR(p)
                     rboot<-ts(FitAR::GetFitARpLS(Sim.Data, pvec=pvec)$res)
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){
                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                   else {
+                     OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]
+                   }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -455,8 +506,15 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   Sim.Data <- demean + FGN::SimulateFGN(n, H) * sigma
                   FitSimModel <- FGN::FitFGN(Sim.Data)
                   rboot <- ts(FitSimModel$res)
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){
                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                    else{
+                      OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]   
+                    }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -474,8 +532,14 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                         FitSimModel <- tseries::garch(Sim.Data,order = c(q2,p2))
                   })
                   rboot <- ts(FitSimModel$residuals[-(1:p2)])
-                  if (test =="gvtest")
-                   OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                  if (test =="PenaRodriguez"){
+                   if (Kernel==FALSE){
+                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                   }
+                   else {
+                     OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]
+                   }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -496,8 +560,15 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                    FitSimModel <- garchFit(formula = form, data = Sim.Data)
                   })
                   rboot <- ts(residuals(FitSimModel, standardize = TRUE))
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){
                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                   else {
+                     OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2] 
+                   }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -512,8 +583,15 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                   Sim.Data <- SimModel(obj)
                   FitSimModel <- FitModel(Sim.Data)
                   rboot <- ts(FitSimModel$res) 
-                  if (test =="gvtest")
+                  if (test =="PenaRodriguez")
+                  {
+                    if (Kernel==FALSE){
                    OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ)[,2]
+                    }
+                    else {
+                      OneSim.stat <- gvtest(rboot, lags, Order, SquaredQ,Kernel=TRUE)[,2]  
+                    }
+                  }
                   else if (test =="BoxPierce")
                     OneSim.stat <- BoxPierce(rboot, lags, Order, SquaredQ)[,2]
                   else if (test =="LjungBox")
@@ -526,7 +604,7 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                }
             })
        }
-       if (nslaves == 1) {
+       if (nworkers == 1) {
         if (SetSeed) 
           set.seed(21597341)
          sim.stat <- replicate(NREP, OneMonteCarlo())
@@ -537,7 +615,7 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
             SimModel <<- SimModel 
             FitModel <<- FitModel 
          }
-            cl <- makeCluster(nslaves)
+            cl <- makeCluster(nworkers)
             if (SetSeed) 
               clusterSetRNGStream(cl, 21597341)
             if (all(class(obj) == "garch")||all(class(obj) == "fGARCH")){ 
@@ -568,7 +646,7 @@ function (obj,lags=seq(5,30,5),order=0,test=c("gvtest","BoxPierce","LjungBox",
                 obs.stat[i])))/(NREP + 1)
        }
       summary <- matrix(c(lags,ans[,2],ans[,3],pvalue),ncol=4)
-    dimnames(summary) <- list(rep("", length(lags)),c("Lags","Statistic","df","p-value"))
+    dimnames(summary) <- list(rep("", length(lags)),c("Lags","Statistic","df","pvalue"))
   return(summary)
     }
 }

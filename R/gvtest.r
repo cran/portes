@@ -1,5 +1,5 @@
 "gvtest" <-
-function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
+function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE,Kernel=FALSE){
      TestType <- "0"
     if (class(obj) == "ts" || class(obj) == "numeric" || class(obj) == 
         "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == 
@@ -28,7 +28,14 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
      k <- NCOL(res)
      n <- NROW(res)
     Det <- numeric(length(lags))
+    if (Kernel==FALSE){
     mat <- ToeplitzBlock(res, lag.max=max(lags))
+    }
+    else {
+
+      mat <- ToeplitzBlock(res, lag.max=max(lags),Kernel=TRUE)
+    }
+
     for (i in 1:length(lags))
     Det[i] <- (-3*n/(2*lags[i]+1))*log(det(mat[(1:((lags[i] +1 ) * k)), (1:((lags[i] + 1) * k))]))
     df <- k^2*(1.5*lags*(lags+1)/(2*lags+1)-order)
@@ -37,6 +44,6 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
     PVAL <- 1 - stats::pchisq(Det,df)
     PVAL[NegativeDF] <- NA
     summary <- matrix(c(lags,Det,df,PVAL),ncol=4)
-    dimnames(summary) <- list(rep("", length(Det)),c("Lags","Statistic","df","p-value"))
+    dimnames(summary) <- list(rep("", length(Det)),c("Lags","Statistic","df","pvalue"))
   return(summary)
 }
