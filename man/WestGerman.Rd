@@ -28,5 +28,5 @@ Deutsche Bundesbank; \url{http://www.jmulti.de/data_imtsa.html}
 Lutkepohl, H. (2005). "New introduction to multiple time series analysis". Springer-Verlag, New York.
 }
 
-\keyword{datasets}
+\keyword{Datasets}
 

@@ -28,4 +28,4 @@ acf(IbmSp500)
 fitstable(IbmSp500)
 
 }
-\keyword{datasets}
+\keyword{Datasets}

@@ -24,4 +24,4 @@ acf(CRSP)
 fitstable(CRSP)
 }
 
-\keyword{datasets}
+\keyword{Datasets}

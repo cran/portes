@@ -1,14 +1,16 @@
 \name{GetResiduals}
 \alias{GetResiduals}
 
-\title{Extract Residuals from ARIMA, VAR, FGN, GARCH, or any Fitted Time Series Model}
+\title{Extract Residuals from ARIMA, VAR, or any Simulated Fitted Time Series Model}
 
 \description{
 This utility function is useful to use in the portmanteau functions, 
-\code{\link{BoxPierce}}, \code{\link{gvtest}}, \code{\link{Hosking}},
+\code{\link{BoxPierce}}, \code{\link{MahdiMcLeod}}, \code{\link{Hosking}},
 \code{\link{LiMcLeod}}, \code{\link{LjungBox}}, and \code{\link{portest}}.
-It takes a fitted time-series object with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-\code{"varest"}, \code{"FitAR"}, \code{"FitFGN"}, \code{"garch"}, \code{"fGARCH"}, or \code{"list"}. 
+\code{GetResiduals()} function takes a fitted time-series object 
+with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
+\code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
+\code{"varest"}, or \code{"list"}. 
  and returns the residuals and the order from the fitted object.
 }
 
@@ -18,8 +20,8 @@ GetResiduals(obj)
 
 \arguments{
 \item{obj}{a fitted time-series model with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-   \code{"varest"}, \code{"FitAR"}, \code{"FitFGN"}, \code{"garch"}, 
-   \code{"fGARCH"}, or \code{"list"}. }
+   \code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
+   \code{"varest"}, or \code{"list"}. }
 }
 
 \value{
@@ -29,10 +31,12 @@ List of order of fitted time series model and residuals from this model.
 \author{ Esam Mahdi and A.I. McLeod.}
 
 \seealso{
-\code{\link{BoxPierce}}, \code{\link{gvtest}}, \code{\link{Hosking}},
-\code{\link{LiMcLeod}}, \code{\link{LjungBox}}, \code{\link{ar}}, \code{\link{arima0}},
-\code{\link{arima}}, \code{\link[forecast]{Arima}}, \code{\link[FitAR]{FitAR}}, \code{\link[vars]{VAR}}, 
-\code{\link[FGN]{FitFGN}}, \code{\link[tseries]{garch}}, \code{\link[fGarch]{garchFit}}, \code{\link[TSA]{tar}}
+\code{\link{ar}}, \code{\link{ar.ols}}, \code{\link{ar.burg}}, 
+\code{\link{ar.yw}}, \code{\link{ar.mle}}, \code{\link{arima0}}, \code{\link{arima}}, 
+\code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}},
+\code{\link[stats]{lm}}, \code{\link[stats]{glm}}, \code{\link[vars]{VAR}}, 
+\code{\link{BoxPierce}}, \code{\link{LjungBox}}, \code{\link{MahdiMcLeod}}, \code{\link{Hosking}},
+\code{\link{LiMcLeod}}.
 }
 
 \examples{

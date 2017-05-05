@@ -128,6 +128,6 @@ structure(c(2, 2, 2, 2, 2, 1.9, 1.9, 1.9, 1.9, 1.9, 1.8, 1.8,
         muHat[i] <- sb*(M+sigHat[i]*g-bHat[i]*sigHat[i]*tan(pi*aHat[i]/2))
       }
     summary <- matrix(c(aHat,bHat,sigHat,muHat),nrow=length(aHat))
-    dimnames(summary) <- list(rep("", length(aHat)), c("alpha","beta","scale","location"))
+    dimnames(summary) <- list(rep("", length(aHat)), c("Alpha","Beta","Scale","Location"))
    return(summary)
 }

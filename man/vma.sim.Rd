@@ -38,15 +38,15 @@ Hipel, K.W. and McLeod, A.I. (2005). "Time Series Modelling of Water Resources a
 \examples{
 k <- 2
 n <- 300
-Trunc.Series <-  50   
+trunc.lag <-  50   
 phi <-  array(c(0.5,0.4,0.1,0.5),dim=c(k,k,1))
 theta <-  array(c(0,0.25,0,0),dim=c(k,k,1))
 sigma <- matrix(c(1,0.71,0.71,2),k,k)
 p <- ifelse(is.null(phi),0,dim(phi)[3])
 q <- ifelse(is.null(theta),0,dim(theta)[3])
 r <- max(p, q)
-d <- Trunc.Series + r
-psi <- ImpulseVMA(phi = phi, theta = theta, Trunc.Series = Trunc.Series)
+d <- trunc.lag + r
+psi <- ImpulseVMA(phi = phi, theta = theta, trunc.lag = trunc.lag)
 a <- t(crossprod(chol(sigma),matrix(rnorm(k*d),ncol=d)))
 vma.sim(psi = psi, a = a)
 }

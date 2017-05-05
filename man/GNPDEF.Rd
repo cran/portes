@@ -29,5 +29,5 @@ Journal of Econometrics, 31(3), 307-327.
 plot(ts(GNPDEF[,2]))
 }
 
-\keyword{datasets}
+\keyword{Datasets}
 

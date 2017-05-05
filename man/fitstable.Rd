@@ -27,7 +27,7 @@ k represents the number of the variables in the vector x and the columns with na
 alpha, beta, scale, and location respectively. 
 }
 
-\author{Esam Mahdi, A.I. McLeod, and Jen-Wen Lin}
+\author{Esam Mahdi, A.I. McLeod, and Jen-Wen Lin.}
 
 \references{
 Lin, J.-W. and McLeod A.I.(2008). 
@@ -43,7 +43,6 @@ See also \code{\link{rStable}}, \code{\link{varima.sim}},
 }
 
 \examples{
-\dontrun{
 ## Univariate
 x <- rStable(800, 1.7, 0, 1, 0)
 fitstable(x)
@@ -55,6 +54,5 @@ DELTA <-c(0,0.2)
 x <- rStable(500, ALPHA, BETA, GAMMA, DELTA)
 fitstable(x)
 }
-}
 
-\keyword{distribution}
+\keyword{Distribution}

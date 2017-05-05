@@ -32,5 +32,5 @@ acf(DEXCAUS)
 fitstable(DEXCAUS)
 }
 
-\keyword{datasets}
+\keyword{Datasets}
 

@@ -1,40 +1,37 @@
 "LiMcLeod" <-
-function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
+function(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE){
      TestType <- "0"
     if (class(obj) == "ts" || class(obj) == "numeric" || class(obj) == 
-        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == 
-        "ts")) 
+        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == "ts")) 
         TestType <- "1"
     if (class(obj) == "ar" || class(obj) == "arima0" || class(obj) == 
-        "Arima" || class(obj) == "varest" || class(obj) == "FitAR" || 
-        class(obj) == "FitFGN" || class(obj) == "garch" || 
-        class(obj) == "fGARCH" || class(obj) == "list")
+        "Arima" || (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima") || class(obj) == "varest" || class(obj) == "lm"
+        || (class(obj)[1] == "glm" && class(obj)[2] == "lm") || class(obj) == "list") 
         TestType<-"2"
     if (TestType == "0") 
-        stop("obj must be class ar, arima0, Arima, varest, FitAR, 
-             FitFGN, garch, fGARCH, ts, numeric, matrix, (mts ts), or list")
+        stop("obj must be class ar, arima0, Arima, (ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
      Maxlag <- max(lags)
      if (TestType=="1")
        res <- as.ts(obj)
-     else{
-             GetResid <- GetResiduals(obj)
-             res <- GetResid$res
-             order <- GetResid$order
-       }
-       if (SquaredQ){ 
+     else{ 
+          GetResid <- GetResiduals(obj)
+          res <- GetResid$res
+          order <- GetResid$order
+     }
+     if (squared.residuals) 
          res <- res^2
-         order <- 0
-       }
        n <- NROW(res)
        k <- NCOL(res)
+       if (Maxlag*season >= n)
+         stop("Maximum value of arguments lags * season can't exceed n!")
 	 df <- k^2*(lags-order)
          NegativeDF <- which(df<0)
          df[NegativeDF] <- 0
-	 Accmat <- stats::acf(res, lag.max = Maxlag, plot = FALSE, type = "correlation")$acf
+	 Accmat <- stats::acf(res, lag.max = Maxlag*season, plot = FALSE, type = "correlation")$acf
 	 inveseR0 <- solve(Accmat[1,,])
-         prodvec <- numeric(Maxlag)
+         prodvec <- numeric(Maxlag*season)
         for(l in 1:Maxlag){
-           tvecR <- t(as.vector(Accmat[l+1,,]))
+           tvecR <- t(as.vector(Accmat[l*season+1,,]))
 	   prodvec[l] <- crossprod(t(tvecR),crossprod(t(kronecker(inveseR0,inveseR0)),t(tvecR)))
 	}
       Q <- n*cumsum(prodvec)
@@ -42,6 +39,6 @@ function(obj,lags=seq(5,30,5),order=0,SquaredQ=FALSE){
       PVAL <- 1 - stats::pchisq(STATISTIC,df)
       PVAL[NegativeDF] <- NA
        summary <- matrix(c(lags,STATISTIC,df,PVAL),ncol=4)
-       dimnames(summary) <- list(rep("", length(STATISTIC)),c("Lags","Statistic","df","pvalue"))
+       dimnames(summary) <- list(rep("", length(STATISTIC)),c("lags","statistic","df","p-value"))
     return(summary)
 }

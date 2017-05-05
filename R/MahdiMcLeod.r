@@ -1,9 +1,8 @@
-"BoxPierce" <-
+"MahdiMcLeod" <-
 function(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE){
      TestType <- "0"
     if (class(obj) == "ts" || class(obj) == "numeric" || class(obj) == 
-        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == 
-        "ts")) 
+        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == "ts")) 
         TestType <- "1"
     if (class(obj) == "ar" || class(obj) == "arima0" || class(obj) == 
         "Arima" || (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima") || class(obj) == "varest" || class(obj) == "lm"
@@ -21,25 +20,20 @@ function(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE){
      }
      if (squared.residuals) 
          res <- res^2
-       n <- NROW(res)
-       k <- NCOL(res)
+     k <- NCOL(res)
+     n <- NROW(res)
        if (Maxlag*season >= n)
          stop("Maximum value of arguments lags * season can't exceed n!")
-        df <- k^2*(lags-order)
-        NegativeDF <- which(df<0)
-        df[NegativeDF] <- 0
-  	     Accmat <- stats::acf(res, lag.max = Maxlag*season, plot = FALSE, type = "correlation")$acf
-	     inveseR0 <- solve(Accmat[1,,])
-             prodvec <- numeric(Maxlag*season)
-        for(l in 1:Maxlag){
-            tvecR <- t(as.vector(Accmat[l*season+1,,]))
-	        prodvec[l] <- crossprod(t(tvecR),crossprod(t(kronecker(inveseR0,inveseR0)),t(tvecR)))
-	}
-       Q <- n*cumsum(prodvec)
-       STATISTIC <- Q[lags]
-       PVAL <- 1 - stats::pchisq(STATISTIC,df)
-       PVAL[NegativeDF] <- NA
-       summary <- matrix(c(lags,STATISTIC,df,PVAL),ncol=4)
-       dimnames(summary) <- list(rep("", length(STATISTIC)),c("lags","statistic","df","p-value"))
-    return(summary)
+    Det <- numeric(length(lags))
+    mat <- ToeplitzBlock(res, lag.max=max(lags),season=season)
+    for (i in 1:length(lags))
+    Det[i] <- (-3*n/(2*lags[i]+1))*log(det(mat[(1:((lags[i] +1 ) * k)), (1:((lags[i] + 1) * k))]))
+    df <- k^2*(1.5*lags*(lags+1)/(2*lags+1)-order)
+    NegativeDF <- which(df<0)
+    df[NegativeDF] <- 0
+    PVAL <- 1 - stats::pchisq(Det,df)
+    PVAL[NegativeDF] <- NA
+    summary <- matrix(c(lags,Det,df,PVAL),ncol=4)
+    dimnames(summary) <- list(rep("", length(Det)),c("lags","statistic","df","p-value"))
+  return(summary)
 }

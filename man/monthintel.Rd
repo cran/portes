@@ -26,5 +26,5 @@ acf(monthintel)
 fitstable(monthintel)
 }
 
-\keyword{datasets}
+\keyword{Datasets}
 
