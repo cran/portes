@@ -132,9 +132,6 @@ Journal of Time Series Analysis, 33(2), 211-222.
 McLeod A.I, Li W.K (1983). "Distribution of the Residual Autocorrelation in Multivariate
 ARMA Time Series Models". Journal of Time Series Analysis, 4, 269-273.
 
-McLeod A, Veenstra J (2014). FGN: Fractional Gaussian Noise and power law decay time series 
-model fitting. R package version 2.0-12, \url{https://CRAN.R-project.org/package=FGN}.
-
 McLeod A, Zhang Y, Xu C (2013). FitAR: Subset AR Model Fitting. R package version 1.94,
 \url{https://CRAN.R-project.org/package=FitAR}.
 
@@ -172,7 +169,7 @@ Heteroskedastic Modelling. R package version 3010.82.1, \url{https://CRAN.R-proj
 \code{\link[stats]{Box.test}}, \code{\link{BoxPierce}}, \code{\link{LjungBox}}, \code{\link{MahdiMcLeod}}, 
 \code{\link{LiMcLeod}}, \code{\link{portest}}, \code{\link{ToeplitzBlock}}, \code{\link{GetResiduals}}, 
 \code{\link[TSA]{tar}}, \code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 
-\code{\link[vars]{VAR}}, \code{\link[FitAR]{FitAR}}, \code{\link[FGN]{FitFGN}}, \code{\link[fracdiff]{fracdiff}}, 
+\code{\link[vars]{VAR}}, \code{\link[FitAR]{FitAR}}, \code{\link[fracdiff]{fracdiff}}, 
 \code{\link[fGarch]{garchFit}}, \code{\link[tseries]{garch}}, \code{\link{varima.sim}}, \code{\link{fitstable}}.
 }
 
@@ -204,12 +201,10 @@ portest(ans1, ncores = 4)
 ans2 <- arima0(WWWusage,order=c(3,1,0))
 portest(ans2, ncores = 4)
 #
-## Arima() or auto.Arima() function takes about 12.1 seconds
+## Arima() or auto.arima() functions from forecast package take about 12.1 seconds
 ## Example 3
-require("forecast")
 ans3 <- Arima(WWWusage,order=c(3,1,0))
 portest(ans3, ncores = 4)
-detach(package:forecast)
 #
 ## ar() function takes about 7.39 seconds
 ## Example 4
@@ -244,14 +239,12 @@ portest(ans5,ncores=4,model=list(sim.model=sim.model,fit.model=fit.model),pkg.na
 ## Monte-Carlo test for seasonality                                            ##
 #################################################################################
 ## Accidental Deaths in the US 1973 - 1978
-require("forecast")
 seasonal.arima<-Arima(USAccDeaths,order=c(0,1,1),seasonal=list(order= c(0,1,1)))
 portest(seasonal.arima,ncores=4,nrep=1000,lags=1:5)
 ## Quarterly U.K. economic time series from 1957 Q3 to 1967 Q4
 cd <- EconomicUK[,1]
 cd.fit <- Arima(cd,order=c(0,1,0),seasonal=list(order=c(0,1,1),period=4))
 portest(cd.fit, lags = c(5,10),ncores=4)
-detach(package:forecast)
 #################################################################################
 ## Monte-Carlo test for linear models and time series regression               ##
 #################################################################################
@@ -269,10 +262,8 @@ fn <- function(obj,lags){
 portest(fit,lags=1:3,test="other",fn=fn,ncores=4) 
 detach(package:car)
 ## Time series regression 
-require("forecast")
 fit.arima <- Arima(LakeHuron, order = c(2,0,0), xreg = time(LakeHuron)-1920)
 portest(fit.arima,ncores=4)
-detach(package:forecast)
 #################################################################################
 ## Monte-Carlo goodness-of-fit VAR test - Multivariate series                  ##
 #################################################################################

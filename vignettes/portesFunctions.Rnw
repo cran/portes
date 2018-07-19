@@ -26,7 +26,6 @@
 \def\AIC{\textsc{aic}\,}
 \def\BIC{\textsc{bic}\,}
 \def\FPE{\textsc{fpe}\,}
-\def\FGN{\textsc{fgn}\,}
 \def\TAR{\textsc{tar}\,}
 \def\ARFIMA{\textsc{arfima}\,}
 \newcommand{\OLS}{{\rm OLS\,}}
@@ -45,13 +44,10 @@ In this vignette, we briefly describe the
 portmanteau test statistics given in the \pkg{portes} package
 based on the asymptotic chi-square distribution and
 Monte-Carlo significance test.
-Some illustrative applications, including two examples from \citet{MahdiMcLeod2012}
-using the \proglang{R} package \pkg{parallel} on a personal
-PC running Windows 8.1 with a 64-bit operating system and four quad core CPUs,
-are given \citep{VeraJansenSuppi2008}.
+Some illustrative applications are given.
 }
 
-\Keywords{\ARMA models, \VARMA models, \SARIMA models, \GARCH models, \FGN models, \ARFIMA models,
+\Keywords{\ARMA models, \VARMA models, \SARIMA models, \GARCH models, \ARFIMA models,
 \TAR models, Monte-Carlo significance test, Portmanteau test, Parallel computing
 }
 
@@ -120,7 +116,6 @@ in the \code{R} package \code{vars} produces an output with class \code{"varest"
 the built in \code{R} functions, such as
 the functions \code{FitAR()}, \code{FitARz()}, and \code{FitARp()}
 from the \code{FitAR} \code{R} package \citep{McLeodZhangXu2013},
-the function \code{FitFGN()} from the \code{FGN} \code{R} package \citep{McLeodVeenstra2014},
 the function \code{garch()} from the \code{R} package
 \code{tseries} \citep{TraplettiHornikLeBaron2015}, the function \code{garchFit()} from the \code{R} package
 \code{fGarch} \citep{Wuertz2013}, the function \code{fracdiff()} from the \code{R}
@@ -492,12 +487,10 @@ The built in \proglang{R} function \code{auto.arima()} in the package \pkg{forec
 the numbers of users connected to the Internet through a server
 every minute \code{WWWusage} dataset of length 100 that is available from the \pkg{forecast} package,
 
-\begin{Schunk}
-\begin{Sinput}
-> library("forecast")
-> FitWWW <- auto.arima(WWWusage)
-\end{Sinput}
-\end{Schunk}
+<<echo=TRUE>>=
+library("forecast")
+FitWWW <- auto.arima(WWWusage)
+@
 
 Then the \code{LjungBox} portmanteau test is applied on the residuals
 of the fitted model at lag values m = 5, 10, 15, 20, 25, and 30 which yields that the assumption

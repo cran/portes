@@ -20,7 +20,9 @@ importFrom("stats", "resid")
 importFrom("stats", "runif")
 importFrom("stats", "ts")
 importFrom("stats", "update.formula")
+importFrom("stats", "simulate")
 import("parallel")
+import("forecast")
 
 export(
 "BoxPierce",

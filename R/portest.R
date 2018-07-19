@@ -444,13 +444,13 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                    par.stable <- fitstable(res)
             		Alpha<-par.stable[1]
             		Beta<-par.stable[2]
-           			Scale<-par.stable[3]
+           		Scale<-par.stable[3]
             		Location<-par.stable[4]
                    innov <- ts(rStable(n=n,Alpha=Alpha,Beta=Beta,Scale=Scale,Location=Location))
                 }
                 else if (innov.dist == "bootstrap") 
                    innov <- sample(x=res, size=n, replace=TRUE)
-                Sim.Data <- forecast::simulate.Arima(obj, nsim = length(obj$x),
+                Sim.Data <- simulate(obj, nsim = length(obj$x),
                        seed = set.seed, xreg = obj$xreg, innov = innov, lambda = obj$lambda)
                        FitSimModel <- forecast::Arima(Sim.Data,order=c(p,d,q),seasonal=list(order=c(ps,ds,qs),period=season),xreg=obj$xreg,include.drift=drift,include.mean=demean,include.constant=constant)
                 rboot <- FitSimModel$resid
@@ -550,7 +550,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
              }
              parallel::clusterExport(cl, list("GetResiduals","MahdiMcLeod","LjungBox",
                 "BoxPierce","Hosking","LiMcLeod","ImpulseVMA","InvertQ",
-                "OneMonteCarlo", "varima.sim","vma.sim", "ToeplitzBlock"))
+                "OneMonteCarlo", "varima.sim","vma.sim", "ToeplitzBlock", "simulate"))
              if (innov.dist == "stable"){
                 parallel::clusterEvalQ(cl, library("akima"))
                 parallel::clusterExport(cl, list("fitstable", "rStable"))

@@ -44,7 +44,7 @@ the built in \code{R} functions \code{ar()}, \code{ar.ols()}, \code{ar.burg()},
 it works with output objects from any fitted model. 
 In this case, users should write their own function to fit any model they want, where they 
 may use the built in \code{R} functions \code{FitAR()}, \code{garch()}, \code{garchFit()}, 
-\code{FitFGN()},  \code{fracdiff()}, \code{tar()}, etc.
+\code{fracdiff()}, \code{tar()}, etc.
 The object \code{obj} represents the output of this function. 
 This output must be a list with at least two outcomes: 
 the fitted residual and the order of the fitted model (\code{list(res = ..., order = ...)}). 
