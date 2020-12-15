@@ -19,7 +19,7 @@ Monte-Carlo techniques or asymptotic distributions.
 
 \arguments{
   \item{obj}{if \code{obj} is an object of class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-             \code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
+             \code{("ARIMA forecast ARIMA Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
              \code{"varest"}, or \code{"list"} 
              then a portmanteau goodness-of-fit test is done on the fitted model. 
              Otherwise, for \code{obj} with class \code{"ts"}, \code{"numeric"}, \code{"matrix"}, 
@@ -97,13 +97,13 @@ the degrees of freedom will be an additional output.
 Box, G.E.P. and Pierce, D.A. (1970). "Distribution of Residual Autocorrelation in Autoregressive-Integrated Moving Average
 Time Series Models". Journal of American Statistical Association, 65, 1509-1526.
 
-Chan KS, Ripley B (2012). TSA: Time Series Analysis. R package version 1.01, 
+Chan KS, Ripley B (2018). TSA: Time Series Analysis. R package version 1.2, 
 \url{https://CRAN.R-project.org/package=TSA}.
 
 Fox, J and Weisberg, S and Adler, D and Bates, D and Baud-Bovy, G and Ellison, S and Firth, D and Friendly, M and 
 Gorjanc, G and Graves, S and Heiberger, R and Laboissiere, R and Monette, G and Murdoch, D and Nilsson, H and Ogle, D 
-and Ripley, B and Venables, W and Zeileis, A and R-Core (2016). car: Companion to Applied Regression. R package
-version 2.1-4, \url{https://CRAN.R-project.org/package=car}.
+and Ripley, B and Venables, W and Zeileis, A and R-Core (2019). car: Companion to Applied Regression. R package
+version 3.0-3, \url{https://CRAN.R-project.org/package=car}.
 
 Fraley C, Leisch F, Maechler M, Reisen V, Lemonte A (2012). fracdiff: Fractionally differenced ARIMA aka ARFIMA(p,d,q) models. 
 R package version 1.4-2, \url{https://CRAN.R-project.org/package=fracdiff}.
@@ -142,24 +142,24 @@ Pena, D. and Rodriguez, J. (2006). "The log of the determinant of the autocorrel
 matrix for testing goodness of fit in time series". Journal of Statistical Planning and
 Inference, 136, 2706-2718.
 
-Pfaff B, Stigler M (2013). vars: VAR Modelling. R package version 1.5-2, 
+Pfaff B, Stigler M (2018). vars: VAR Modelling. R package version 1.5-3, 
 \url{https://CRAN.R-project.org/package=vars}.
 
 Rob J Hyndman with contributions from George Athanasopoulos Slava Razbash DSZZYKCB,
-Wang E (2017). forecast: Forecasting Functions for Time Series and Linear Models. 
-R package version 8.0, \url{https://CRAN.R-project.org/package=forecast}.
+Wang E (2019). forecast: Forecasting Functions for Time Series and Linear Models. 
+R package version 8.7, \url{https://CRAN.R-project.org/package=forecast}.
 
-Tierney, L., Rossini, A. J., Li, N., and Sevcikova, H. (2016). snow: Simple Network of Workstations.
-\code{R} package version 0.4-2. \url{https://CRAN.R-project.org/package=snow}.
+Tierney, L., Rossini, A. J., Li, N., and Sevcikova, H. (2018). snow: Simple Network of Workstations.
+\code{R} package version 0.4-3. \url{https://CRAN.R-project.org/package=snow}.
 
-Trapletti A, Hornik K, LeBaron B (2017). tseries: Time Series Analysis and Computational Finance. 
-R package version 0.10-38, \url{https://CRAN.R-project.org/package=tseries}.
+Trapletti A, Hornik K, LeBaron B (2019). tseries: Time Series Analysis and Computational Finance. 
+R package version 0.10-47, \url{https://CRAN.R-project.org/package=tseries}.
 
 Gonzalo Vera and Ritsert C. Jansen and Remo L. Suppi (2008). R/parallel - speeding 
 up bioinformatics analysis with R. BMC Bioinformatics, 9:390.
 
-Wuertz D, core team members R (2016). fGarch: Rmetrics - Autoregressive Conditional
-Heteroskedastic Modelling. R package version 3010.82.1, \url{https://CRAN.R-project.org/package=fGarch}.
+Wuertz D, core team members R (2019). fGarch: Rmetrics - Autoregressive Conditional
+Heteroskedastic Modelling. R package version 3042.83.1, \url{https://CRAN.R-project.org/package=fGarch}.
 }
 
 \seealso{
@@ -297,24 +297,6 @@ returns <- as.ts(monthintel)
 lags <- c(5, 10, 20, 40)
 portest(returns, lags = lags, ncores = 4, squared.residuals = FALSE)
 portest(returns,lags=lags,ncores=4,squared.residuals=TRUE,innov.dist="t",dft=5)
-#################################################################################
-## Monte-Carlo test for Threshold Autoregressive (TAR) Models                  ##
-## It takes about 54.27 seconds on personal PC with 4 CPUs                     ##
-#################################################################################
-require("TSA")
-fit.model <- function(data){
-    fit <- TSA::tar(y=log(data),p1=4,p2=4,d=3,a=0.1,b=0.9,print=FALSE)
-    res <- ts(fit$std.res)
-    parSpec <- list(res=res,fit=fit)
-  parSpec
-}
-sim.model <- function(parSpec){
-    fit <- parSpec$fit   
-  exp(tar.sim(fit)$y)
-}
-data(prey.eq)
-portest(fit.model(prey.eq),ncores=4,model=list(sim.model,fit.model),pkg.name="TSA")
-detach(package:TSA)
 }
 }
 

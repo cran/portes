@@ -4,6 +4,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
          innov.dist=c("Gaussian","t","stable", "bootstrap"), ncores=1,nrep=1000,
         model=list(sim.model=NULL,fit.model=NULL),pkg.name=NULL,set.seed=123,...)
 {
+    test <- match.arg(test)
     if ((test == "other" && is.null(fn))|| (test != "other" && !is.null(fn)))
        stop("inconsistent match between fn and test")
     if (!is.null(fn)) 
@@ -16,17 +17,17 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
     if (is.null(order)) order <- 0
     if (is.null(season)) season <- 1
     innov.dist <- match.arg(innov.dist)
-    test <- match.arg(test)
+    class.obj = class(obj)[1]
      TestType <- "0"
-    if (class(obj) == "ts" || class(obj) == "numeric" || class(obj) ==
-        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == "ts"))
+    if (class.obj == "ts" || class.obj == "numeric" || class.obj == 
+        "matrix" || class.obj == "mts") 
         TestType <- "1"
-    if (class(obj) == "ar" || class(obj) == "arima0" || class(obj) == 
-        "Arima" || (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima") || class(obj) == "varest" || class(obj) == "lm"
-        || (class(obj)[1] == "glm" && class(obj)[2] == "lm") || class(obj) == "list") 
+    if (class.obj == "ar" || class.obj == "arima0" || class.obj == 
+        "Arima" || class.obj == "ARIMA" || class.obj == "varest" || class.obj == "lm"
+        || class.obj == "glm" || class.obj == "list") 
         TestType<-"2"
     if (TestType == "0") 
-        stop("obj must be class ar, arima0, Arima, (ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
+        stop("obj must be class ar, arima0, Arima, (ARIMA forecast_ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
     if (TestType == "1") { ## apply the test on random series
         res <- as.ts(obj)
         Order <- order
@@ -81,7 +82,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
       if (TestType == 1)
            sigma <- matrix(stats::acf(res, lag.max = 1, plot = FALSE,type = "covariance")$acf[1, , ], k, k)
       else { ## we need to extract parameters from fitted model so we use them for simulation
-                        if (all(class(obj) == "ar")) {##ar models on univariate series (Model 1) and multivariate series (Model2) 
+                        if (all(class.obj == "ar")) {##ar models on univariate series (Model 1) and multivariate series (Model2) 
                             p <- obj$order
                             q <- 0
                             if (k == 1)
@@ -111,7 +112,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                             else
                                Demean <- TRUE
                             }
-                else if (all(class(obj) == "varest")) {## multivariate var models - vars package
+                else if (all(class.obj == "varest")) {## multivariate var models - vars package
                               sigma <- summary(obj)[[3]]
                               p <- obj$p
                               q <- 0
@@ -153,7 +154,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                                   phi <- array(Phi[, -((p * k + 1):(p * k + 2))], dim = c(k, k, p))
                                 }
                          }
-                else if (all(class(obj) == "arima0") || all(class(obj) == "Arima")) {## arima0 or arima models
+                else if (all(class.obj == "arima0") || all(class.obj == "Arima")) {## arima0 or arima models
                                 Model <- 4
                                 pdq <- obj$arma
                                 if(as.integer(pdq[3])!= 0 || as.integer(pdq[4]) != 0 || as.integer(pdq[7]) != 0)
@@ -183,7 +184,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                                        stop ( "Use auto.arima or Arima() function for arima models with xreg instead of arima() and arima0()")
                                 }
                          }
-                    else if (all (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima")){
+                    else if (all(class.obj == "ARIMA")){
                       Model <- 5
                       sigma <- obj$sigma2
                        pdq <- obj$arma
@@ -205,10 +206,10 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                                    constant <- FALSE
                                 }               
                     }
-                    else if (all(class(obj) == "lm") || all (class(obj)[1] == "glm" && class(obj)[2] == "lm")){
+                    else if (all(class.obj == "lm") || all (class.obj == "glm")){
                         Model <- 6
                    }
-                    else if (all(class(obj) == "list")) {
+                    else if (all(class.obj == "list")) {
                            Model <- 7
                            stopifnot(!is.null(pkg.name)==TRUE)
                            pkg.name <<- as.name(pkg.name)
@@ -431,7 +432,7 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                     OneSim.stat <- matrix(fn(rboot, lags),nrow=length(lags))[,1]
                  return(OneSim.stat)
                 }
-          else if (Model == 5) {## ## univariate models with class Arima arima -use simulate.Arima() function in forecast package
+          else if (Model == 5) {## ## univariate models with class ARIMA forecast_ARIMA Arima -use simulate.Arima() function in forecast package
                 if (innov.dist == "Gaussian")
                   innov <- ts(stats::rnorm(n, mean = demean, sd = sqrt(sigma)))
                 else if (innov.dist == "t"){
@@ -490,9 +491,9 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
                  Sim.response <- ts(stats::simulate(obj, nsim=1))+innov
                  Sim.Data <- data.frame(obj$model[,-1],Sim.response)
                  colnames(Sim.Data) <- c(names(obj$model)[-1],"y")
-               if (all(class(obj) == "lm"))
+               if (all(class.obj == "lm"))
                     FitSimModel <- stats::lm(update.formula(formula(obj),y ~.), data=Sim.Data)
-               else if (all(class(obj)[1] == "glm" && class(obj)[2] == "lm")) 
+               else if (all(class.obj == "glm")) 
                 FitSimModel <- stats::glm(update.formula(formula(obj),y ~.), data=Sim.Data)        
                  rboot <- FitSimModel$resid
                   if (test =="MahdiMcLeod")
@@ -537,13 +538,13 @@ function (obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
        }
      else{ ## Monte-Carlo with multiple CPUs 
            OneMonteCarlo <<- OneMonteCarlo
-              if (all(class(obj) == "list")){
+              if (all(class.obj == "list")){
                 sim.model <<- sim.model
                 fit.model <<- fit.model
               }
             cl <- parallel::makeCluster(ncores)
               parallel::clusterSetRNGStream(cl, set.seed)
-             if (all(class(obj) == "list")){
+             if (all(class.obj == "list")){
                parallel::clusterExport(cl, list("sim.model","fit.model"))
                Package <- as.call(list(library, as.name(pkg.name)))
                parallel::clusterCall(cl,eval,Package,env = .GlobalEnv)

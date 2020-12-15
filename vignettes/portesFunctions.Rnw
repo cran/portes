@@ -30,8 +30,7 @@
 \def\ARFIMA{\textsc{arfima}\,}
 \newcommand{\OLS}{{\rm OLS\,}}
 
-\author{Esam Mahdi\\Islamic University of
-               Gaza \And
+\author{Esam Mahdi\\Qatar University \And
          A. Ian McLeod\\University of
          Western Ontario}
 \title{Portmanteau Test Statistics}
@@ -53,10 +52,9 @@ Some illustrative applications are given.
 
 \Address{
   Esam Mahdi\\
-  Department of Mathematics\\
-  Islamic University of Gaza\\
-  E-mail: \email{emahdi@iugaza.edu.ps}\\
-  URL: \url{http://site.iugaza.edu.ps/emahdi}\\
+  Department of Mathematics, Statistics, and Physics\\
+  Qatar University\\
+  E-mail: \email{emahdi@qu.edu.qa}\\
   A. Ian McLeod\\
   Department of Statistical and Actuarial Sciences\\
   University of Western Ontario\\
@@ -104,8 +102,8 @@ package \code{stats} produce an output with class \code{"ar"}.},
 produces an output with class \code{"arima0"}.},
  \code{"Arima"}\footnote{The function \code{arima()}
 in the \code{R} package \code{stats} produces an output with class \code{"Arima"}.},
-\code{("ARIMA" "Arima")}\footnote{The functions \code{Arima()} and \code{auto.arima()}
-in the \code{R} package \code{forecast} produce an output with class \code{("ARIMA" "Arima")}.},
+\code{("ARIMA forecast ARIMA Arima")}\footnote{The functions \code{Arima()} and \code{auto.arima()}
+in the \code{R} package \code{forecast} produce an output with class \code{("ARIMA forecast ARIMA Arima")}.},
 \code{"lm"}\footnote{The function \code{lm()}
 in the \code{R} package \code{stats} produces an output with class \code{"lm"}.},
 \code{("glm" "lm")}\footnote{The function \code{glm()}
@@ -133,7 +131,7 @@ where \code{season = 1} is used for usual test with no seasonality check.
 
 The argument \code{order} is used for degrees of freedom of asymptotic chi-square distribution.
 If \code{obj} is a fitted time-series model with class \code{"ar"},
-\code{"arima0"}, \code{"Arima"}, \code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")},
+\code{"arima0"}, \code{"Arima"}, \code{("ARIMA forecast ARIMA Arima")}, \code{"lm"}, \code{("glm" "lm")},
 \code{"varest"}, or \code{"list"} then no need to enter the value of \code{order} as it will be
 automatically determined from the original fitted model of the object \code{obj}.
 In general \code{order = p + q}, where \code{p} and \code{q} are
@@ -483,14 +481,16 @@ portest(obj,lags=seq(5,30,5),test="LjungBox",fn=NULL,squared.residuals=FALSE,
 \label{Example4}
 
 The built in \proglang{R} function \code{auto.arima()} in the package \pkg{forecast}
-\citep{HyndmanRazbash2015} is used to fit the best \ARIMA model based on the \AIC criterion to
+\citep{HyndmanRazbash2019} is used to fit the best \ARIMA model based on the \AIC criterion to
 the numbers of users connected to the Internet through a server
 every minute \code{WWWusage} dataset of length 100 that is available from the \pkg{forecast} package,
 
-<<echo=TRUE>>=
-library("forecast")
-FitWWW <- auto.arima(WWWusage)
-@
+\begin{Schunk}
+\begin{Sinput}
+> library("forecast")
+> FitWWW <- auto.arima(WWWusage)
+\end{Sinput}
+\end{Schunk}
 
 Then the \code{LjungBox} portmanteau test is applied on the residuals
 of the fitted model at lag values m = 5, 10, 15, 20, 25, and 30 which yields that the assumption

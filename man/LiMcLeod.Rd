@@ -15,7 +15,7 @@ LiMcLeod(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE)
   \item{obj}{a univariate or multivariate series with class \code{"numeric"}, \code{"matrix"}, 
              \code{"ts"}, or \code{("mts" "ts")}.
              It can be also an object of fitted time-series model with class \code{"ar"}, 
-              \code{"arima0"}, \code{"Arima"}, \code{("ARIMA" "Arima")}, \code{"lm"},
+              \code{"arima0"}, \code{"Arima"}, \code{("ARIMA forecast ARIMA Arima")}, \code{"lm"},
               \code{("glm" "lm")}, or \code{"varest"}. 
               \code{obj} may also an object with class \code{"list"} (see details and following examples).}
   \item{lags}{vector of lag auto-cross correlation coefficients used for \code{Hosking} test.}
@@ -23,7 +23,7 @@ LiMcLeod(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE)
               class \code{"numeric"}, \code{"matrix"}, \code{"ts"}, or \code{("mts" "ts")}. 
               In general \code{order} equals to the number of estimated parameters in the fitted model.
              If \code{obj} is an object with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-             \code{"varest"}, \code{("ARIMA" "Arima")}, or \code{"list"} then no need to enter 
+             \code{"varest"}, \code{("ARIMA forecast ARIMA Arima")}, or \code{"list"} then no need to enter 
              the value of \code{order} as it will be automatically determined.
              For \code{obj} with other classes, the \code{order} is needed for degrees 
              of freedom of asymptotic chi-square distribution.}           

@@ -14,7 +14,7 @@ There are 372 data values.
 \usage{data(monthintel)}
 
 \source{
-\url{http://faculty.chicagobooth.edu/ruey.tsay/teaching/fts2/}
+\url{https://faculty.chicagobooth.edu/ruey-s-tsay/teaching}
 }
 
 \references{

@@ -3,14 +3,14 @@
 {
     class.obj = class(obj)[1]
     if (class.obj != "ar" && class.obj != "arima0" && class.obj != "Arima" && class.obj != "varest" && 
-         all(class(obj)[1] != "ARIMA" && class(obj)[2] != "Arima") && class.obj != "lm" 
-       && all(class(obj)[1] != "glm" && class(obj)[2] != "lm") && class.obj != "list" ) 
-   stop("obj must be class ar, arima0, Arima, (ARIMA Arima), varest, lm, (glm lm), or list")      
+         class.obj != "ARIMA" && class.obj != "lm" 
+       && class.obj != "glm" && class.obj != "list" ) 
+   stop("obj must be class ar, arima0, Arima, (ARIMA forecast_ARIMA Arima), varest, lm, (glm lm), or list")      
     if (all(class.obj=="ar")){
         order <- obj$order
         res <- ts(as.matrix(obj$resid)[-(1:order),])
     }
-    else if (all(class.obj == "arima0") || all(class.obj == "Arima")|| all (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima")) {
+    else if (all(class.obj == "arima0") || all(class.obj == "Arima")|| all (class.obj == "ARIMA")) {
 	  pdq <- obj$arma
 	  p <- pdq[1]
 	  q <- pdq[2]
@@ -31,7 +31,7 @@
           order <- order
         res <- obj$res
     }
-    if (all(class.obj=="lm") || all(class(obj)[1] == "glm" && class(obj)[2] == "lm")){
+    if (all(class.obj=="lm") || all(class.obj == "glm")){
      order <- 0
      res <- obj$residuals
     }

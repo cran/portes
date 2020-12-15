@@ -9,7 +9,7 @@ This utility function is useful to use in the portmanteau functions,
 \code{\link{LiMcLeod}}, \code{\link{LjungBox}}, and \code{\link{portest}}.
 \code{GetResiduals()} function takes a fitted time-series object 
 with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-\code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
+\code{("ARIMA forecast ARIMA Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
 \code{"varest"}, or \code{"list"}. 
  and returns the residuals and the order from the fitted object.
 }
@@ -20,7 +20,7 @@ GetResiduals(obj)
 
 \arguments{
 \item{obj}{a fitted time-series model with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
-   \code{("ARIMA" "Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
+   \code{("ARIMA forecast ARIMA Arima")}, \code{"lm"}, \code{("glm" "lm")}, 
    \code{"varest"}, or \code{"list"}. }
 }
 

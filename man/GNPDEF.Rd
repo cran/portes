@@ -16,10 +16,6 @@ GNP deflator for U.S. inflation data from 1947-01-01 to 2010-04-01.}
   }
 }
 
-\source{
-\url{http://research.stlouisfed.org}
-}
-
 \references{
 Bollerslev, T. (1986). "Generalized autoregressive conditional heteroskedasticity".
 Journal of Econometrics, 31(3), 307-327.

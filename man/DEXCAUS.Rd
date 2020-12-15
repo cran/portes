@@ -24,7 +24,7 @@ Notes:               Noon buying rates in New York City for cable transfers paya
 }
 
 \source{
-\url{http://research.stlouisfed.org/fred2/series/DEXCAUS}
+\url{https://fred.stlouisfed.org/series/DEXCAUS}
 }
 
 \examples{

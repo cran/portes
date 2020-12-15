@@ -1,16 +1,16 @@
 "BoxPierce" <-
 function(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE){
+     class.obj = class(obj)[1]
      TestType <- "0"
-    if (class(obj) == "ts" || class(obj) == "numeric" || class(obj) == 
-        "matrix" || (class(obj)[1] == "mts" && class(obj)[2] == 
-        "ts")) 
+    if (class.obj == "ts" || class.obj == "numeric" || class.obj == 
+        "matrix" || class.obj == "mts") 
         TestType <- "1"
-    if (class(obj) == "ar" || class(obj) == "arima0" || class(obj) == 
-        "Arima" || (class(obj)[1] == "ARIMA" && class(obj)[2] == "Arima") || class(obj) == "varest" || class(obj) == "lm"
-        || (class(obj)[1] == "glm" && class(obj)[2] == "lm") || class(obj) == "list") 
+    if (class.obj == "ar" || class.obj == "arima0" || class.obj == 
+        "Arima" || class.obj == "ARIMA" || class.obj == "varest" || class.obj == "lm"
+        || class.obj == "glm" || class.obj == "list") 
         TestType<-"2"
     if (TestType == "0") 
-        stop("obj must be class ar, arima0, Arima, (ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
+        stop("obj must be class ar, arima0, Arima, (ARIMA forecast_ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
     Maxlag <- max(lags)
      if (TestType=="1")
        res <- as.ts(obj)

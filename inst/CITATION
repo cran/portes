@@ -10,12 +10,12 @@ citEntry(entry = "Article",
   volume       = "33",
   number       = "2",
   pages	       = "211--222",
-  url          = "http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9892.2011.00752.x/abstract",
+  url          = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9892.2011.00752.x",
 
   textVersion  =
   paste("Mahdi, E. and McLeod, A. I. (2012).",
         "Improved multivariate portmanteau diagnostic test.",
         "Journal of Time Series Analysis 33/2,  211-222",
-        "URL http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9892.2011.00752.x/abstract")
+        "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9892.2011.00752.x")
 )
 
