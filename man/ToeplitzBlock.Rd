@@ -9,13 +9,12 @@ This is needed for the function \code{\link{MahdiMcLeod}}.
 }
 
 \usage{
-ToeplitzBlock(res,lag.max,season=1)
+ToeplitzBlock(res,Maxlag)
 }
 
 \arguments{
   \item{res}{residuals, numeric or matrix. }
-  \item{lag.max}{an integer number = \eqn{m} is used to determined the order of the block matrix. }
-  \item{season}{seasonal periodicity given from \code{\link{MahdiMcLeod}}. Default is 1 for non seasonality cases.}
+  \item{Maxlag}{an integer number = \eqn{m} is used to determined the order of the block matrix. }
 }
 
 \value{ 
@@ -42,12 +41,10 @@ Journal of Time Series Analysis. (JTSA - 3192).
 
 \examples{
 x <- rnorm(100)   
-ToeplitzBlock(x,lag.max=4)          ## Univariate Series
+ToeplitzBlock(x,Maxlag=4)          ## Univariate Series
 #
 y <- cbind(rnorm(100),rnorm(100)) 
-ToeplitzBlock(y,lag.max=4)          ## Multivariate Series
-#
-ToeplitzBlock(y,lag.max=4,season=4) ## Multivariate Series
+ToeplitzBlock(y,Maxlag=4)          ## Multivariate Series
 }
 
 \keyword{Array}

@@ -1,6 +1,6 @@
 "vma.sim" <-
 function(psi,a){
-    if (!is.null(psi) && class(psi)!="array")
+    if (!is.null(psi) && !inherits(psi,"array"))
 	stop("Psi must be enterd as NULL or array with dimension (k*k*Q)")
       if (is.null(psi)) return(a)
       n <- NROW(a)

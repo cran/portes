@@ -25,7 +25,5 @@ Tsay, R. S. (2010). "Analysis of Financial Time Series". Wiley, New York, 3rd ed
 data(IbmSp500)
 plot(IbmSp500) 
 acf(IbmSp500)
-fitstable(IbmSp500)
-
 }
 \keyword{Datasets}

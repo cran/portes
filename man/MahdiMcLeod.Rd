@@ -5,8 +5,8 @@
 
 \description{
 New generalized variance portmanteau test based on the determinant of the Hosking's autocorrelation block 
-Toeplitz matrix with order \eqn{m+1} given in the function \code{\link{ToeplitzBlock}}, 
-where \eqn{m} represents the order of the block matrix.
+Toeplitz matrix with fitdf \eqn{m+1} given in the function \code{\link{ToeplitzBlock}}, 
+where \eqn{m} represents the fitdf of the block matrix.
 Originally, the generalized variance portmanteau test, \code{MahdiMcLeod}, 
 for univariate time series was derived by Pena and Rodriguez (2002)
 based on the gamma distribution. 
@@ -20,7 +20,7 @@ Hosking (1980) and Li and McLeod (1981) in the multivariate time series.
 }
 
 \usage{
-MahdiMcLeod(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE)
+MahdiMcLeod(obj,lags=seq(5,30,5),fitdf=0,sqrd.res=FALSE)
 }
 
 \arguments{
@@ -31,19 +31,18 @@ MahdiMcLeod(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE)
               \code{("glm" "lm")}, or \code{"varest"}. 
               \code{obj} may also an object with class \code{"list"} (see details and following examples).}
   \item{lags}{vector of lag auto-cross correlation coefficients used for \code{Hosking} test.}
-  \item{order}{Default is zero for testing the randomness of a given sequence with 
+  \item{fitdf}{Default is zero for testing the randomness of a given sequence with 
               class \code{"numeric"}, \code{"matrix"}, \code{"ts"}, or \code{("mts" "ts")}. 
-              In general \code{order} equals to the number of estimated parameters in the fitted model.
+              In general \code{fitdf} equals to the number of estimated parameters in the fitted model.
              If \code{obj} is an object with class \code{"ar"}, \code{"arima0"}, \code{"Arima"}, 
              \code{"varest"}, \code{("ARIMA forecast ARIMA Arima")}, or \code{"list"} then no need to enter 
-             the value of \code{order} as it will be automatically determined.
-             For \code{obj} with other classes, the \code{order} is needed for degrees 
+             the value of \code{fitdf} as it will be automatically determined.
+             For \code{obj} with other classes, the \code{fitdf} is needed for degrees 
              of freedom of asymptotic chi-square distribution.}           
-  \item{season}{seasonal periodicity for testing seasonality. Default is 1 for testing the non seasonality cases.}
-  \item{squared.residuals}{if \code{TRUE} then apply the test on the squared values. 
+  \item{sqrd.res}{if \code{TRUE} then apply the test on the squared values. 
              This checks for Autoregressive Conditional Heteroscedastic, 
              \code{ARCH}, effects. 
-             When \code{squared.residuals = FALSE}, then apply the test on the usual residuals. }
+             When \code{sqrd.res = FALSE}, then apply the test on the usual residuals. }
 }
 
 \details{
@@ -53,11 +52,11 @@ the built in \code{R} functions \code{ar()}, \code{ar.ols()}, \code{ar.burg()},
 \code{auto.arima()}, \code{lm()}, \code{glm()}, and \code{VAR()}, 
 it works with output objects from any fitted model. 
 In this case, users should write their own function to fit any model they want, where they 
-may use the built in \code{R} functions \code{FitAR()}, \code{garch()}, \code{garchFit()}, 
+may use the built in \code{R} functions \code{garch()}, \code{garchFit()}, 
 \code{fracdiff()}, \code{tar()}, etc.
 The object \code{obj} represents the output of this function. 
 This output must be a list with at least two outcomes: 
-the fitted residual and the order of the fitted model (\code{list(res = ..., order = ...)}). 
+the fitted residual and the fitdf of the fitted model (\code{list(res = ..., fitdf = ...)}). 
 See the following example with the function \code{FitModel()}.
 }
 
@@ -107,12 +106,12 @@ MahdiMcLeod(x)                              ## multivariate test
 fit <- arima(Nile, c(1, 0, 1))
 lags <- c(5, 10, 20)
 ## Apply the univariate test statistic on the fitted model 
-MahdiMcLeod(fit, lags)            ## Correct (no need to specify order) 
-MahdiMcLeod(fit, lags, order = 2) ## Correct 
-## Apply the test statistic on the residuals and set order = 2 
+MahdiMcLeod(fit, lags)            ## Correct (no need to specify fitdf) 
+MahdiMcLeod(fit, lags, fitdf = 2) ## Correct 
+## Apply the test statistic on the residuals and set fitdf = 2 
 res <- resid(fit)
-MahdiMcLeod(res, lags)             ## Wrong (order is needed!)  
-MahdiMcLeod(res, lags, order = 2)  ## Correct 
+MahdiMcLeod(res, lags)             ## Wrong (fitdf is needed!)  
+MahdiMcLeod(res, lags, fitdf = 2)  ## Correct 
 ##
 ##
 ## Quarterly, west German investment, income, and consumption from 1960 Q1 to 1982 Q4 
@@ -123,49 +122,25 @@ DiffData <- matrix(numeric(3 * 91), ncol = 3)
 fit <- ar.ols(DiffData, intercept = TRUE, order.max = 2)
 lags <- c(5,10)
 ## Apply the test statistic on the fitted model 
-MahdiMcLeod(fit,lags)                ## Correct (no need to specify order)
-## Apply the test statistic on the residuals where order = 2
+MahdiMcLeod(fit,lags)                ## Correct (no need to specify fitdf)
+## Apply the test statistic on the residuals where fitdf = 2
 res <- ts((fit$resid)[-(1:2), ])
-MahdiMcLeod(res,lags)                ## Wrong (order is needed!)  
-MahdiMcLeod(res,lags,order = 2)      ## Correct 
+MahdiMcLeod(res,lags)                ## Wrong (fitdf is needed!)  
+MahdiMcLeod(res,lags,fitdf = 2)      ## Correct 
 ##
 ##
 ## Monthly log stock returns of Intel corporation data: Test for ARCH Effects 
 monthintel <- as.ts(monthintel)
 MahdiMcLeod(monthintel)                         ## Usual test 
-MahdiMcLeod(monthintel,squared.residuals=TRUE)  ## Test for ARCH effects
-##
-##
-## Test for seasonality
-## Accidental Deaths in the US 1973 - 1978
-seasonal.arima <- arima(USAccDeaths, order = c(0,1,1), seasonal = list(order = c(0,1,1)))
-MahdiMcLeod(seasonal.arima, lags = 5, season = 12)
-## Quarterly U.K. economic time series from 1957 Q3 to 1967 Q4
-cd <- EconomicUK[,1]
-cd.fit <- arima(cd,order=c(0,1,0),seasonal=list(order=c(0,1,1),period=4))
-MahdiMcLeod(cd.fit, lags = c(5,10), season = 4)
-##
+MahdiMcLeod(monthintel,sqrd.res=TRUE)  ## Test for ARCH effects
 ##
 #### Write a function to fit a model: Apply portmanteau test on fitted obj with class "list"
-## Example 1 
-require("FitAR")
-FitModel <- function(data){
-    fit <- FitAR(z=data,p=2)
-    p <- length(fit$phiHat)
-    order <- p
-    res <- fit$res 
- list(res=res,order=order)
-}
-Fit <- FitModel(Nile)
-MahdiMcLeod(Fit) 
-detach(package:FitAR)
-##
-## Example 2
+## Example
 FitModel <- function(data){
     fit <- ar.ols(data, intercept = TRUE, order.max = 2)
-    order <- 2
+    fitdf <- 2
     res <- res <- ts((fit$resid)[-(1:2), ]) 
- list(res=res,order=order)
+ list(res=res,fitdf=fitdf)
 }
 data(WestGerman)
 DiffData <- matrix(numeric(3 * 91), ncol = 3)

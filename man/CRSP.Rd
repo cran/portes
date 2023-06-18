@@ -21,7 +21,6 @@ Tsay, R. S. (2002). Analysis of Financial Time Series. Wiley, New York.
 
 \examples{
 acf(CRSP)
-fitstable(CRSP)
 }
 
 \keyword{Datasets}

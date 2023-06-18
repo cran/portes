@@ -12,8 +12,8 @@ Monte-Carlo techniques or asymptotic distributions.
 
 \usage{
  portest(obj,lags=seq(5,30,5),test=c("MahdiMcLeod","BoxPierce","LjungBox",
-      "Hosking","LiMcLeod","other"),fn=NULL,squared.residuals=FALSE,MonteCarlo=TRUE,
-         innov.dist=c("Gaussian","t","stable", "bootstrap"), ncores=1,nrep=1000,
+      "Hosking","LiMcLeod","other"),fn=NULL,sqrd.res=FALSE,MonteCarlo=TRUE,
+         innov.dist=c("Gaussian","t","bootstrap"), ncores=1,nrep=1000,
         model=list(sim.model=NULL,fit.model=NULL),pkg.name=NULL,set.seed=123,...)
 }
 
@@ -26,7 +26,7 @@ Monte-Carlo techniques or asymptotic distributions.
              or \code{("mts" "ts")}, a test of randomness is done.}
   \item{lags}{vector of lag values is used for portmanteau test.}
   \item{test}{portmanteau test statistic type.}
-    \item{squared.residuals}{as described in \code{BoxPierce}, \code{MahdiMcLeod}, 
+    \item{sqrd.res}{as described in \code{BoxPierce}, \code{MahdiMcLeod}, 
              \code{Hosking}, \code{LiMcLeod}, and \code{LjungBox}.} 
  \item{fn}{a function calculates the test statistic that is associated with \code{test = "other"}. 
    For example, \code{fn} can be a function returns the generalized Durbin-Watson test statistic values calculated at
@@ -35,8 +35,7 @@ and \code{lags} are described as above.}
  \item{MonteCarlo}{if \code{TRUE} then apply the Monte-Carlo version of portmanteau statistic. 
              Otherwise, apply the asymptotic distribution. }
   \item{innov.dist}{distribution to generate univariate or multivariate innovation process. 
-  This could be \code{Gaussian}, \code{t}, \code{stable}, 
-  or \code{bootstrap} using resampled errors rather than distributed errors.
+  This could be \code{Gaussian}, \code{t}, or \code{bootstrap} using resampled errors rather than distributed errors.
    Default is \code{Gaussian}.}
  \item{ncores}{number of cores needed to use in parallel calculations.
              Default is a single CPU.}
@@ -50,7 +49,7 @@ and \code{lags} are described as above.}
   \item{set.seed}{\code{set.seed} is initialized. Default seed is 123, but users can use any seed they wish.} 
   \item{...}{arguments to be passed to methods, such as \code{dft} degrees of freedom 
   needed to generate innovations with univariate/multivariate series with t-distribution innovations, 
- or \code{trunc.lag} used in \code{\link{varima.sim}} function, or \code{order} and \code{season} as described in
+ or \code{trunc.lag} used in \code{\link{varima.sim}} function, or \code{fitdf} and \code{season} as described in
  \code{\link{BoxPierce}}, \code{\link{LjungBox}}, \code{\link{Hosking}}, \code{\link{LiMcLeod}} and \code{\link{MahdiMcLeod}}.}  
 }
 
@@ -72,7 +71,7 @@ must be provided via the argument \code{func}.
 The object \code{obj} is the output of the fitted model coded in
 the function \code{fit.model} and it is a \code{"list"} with at least
 \code{res}, the residuals from the fitted model in \code{fit.model()}, 
-and \code{order}, the order of this fitted model.
+and \code{fitdf}, the fitdf of this fitted model.
 The output from the function \code{sim.model()} is a simulated 
 univariate or multivariate series from the fitted model obtained from the function
 \code{fit.model()}.
@@ -96,9 +95,6 @@ the degrees of freedom will be an additional output.
 \references{
 Box, G.E.P. and Pierce, D.A. (1970). "Distribution of Residual Autocorrelation in Autoregressive-Integrated Moving Average
 Time Series Models". Journal of American Statistical Association, 65, 1509-1526.
-
-Chan KS, Ripley B (2018). TSA: Time Series Analysis. R package version 1.2, 
-\url{https://CRAN.R-project.org/package=TSA}.
 
 Fox, J and Weisberg, S and Adler, D and Bates, D and Baud-Bovy, G and Ellison, S and Firth, D and Friendly, M and 
 Gorjanc, G and Graves, S and Heiberger, R and Laboissiere, R and Monette, G and Murdoch, D and Nilsson, H and Ogle, D 
@@ -131,9 +127,6 @@ Journal of Time Series Analysis, 33(2), 211-222.
 
 McLeod A.I, Li W.K (1983). "Distribution of the Residual Autocorrelation in Multivariate
 ARMA Time Series Models". Journal of Time Series Analysis, 4, 269-273.
-
-McLeod A, Zhang Y, Xu C (2013). FitAR: Subset AR Model Fitting. R package version 1.94,
-\url{https://CRAN.R-project.org/package=FitAR}.
 
 Pena, D. and Rodriguez, J. (2002). "A Powerful Portmanteau Test of Lack of Test for Time Series".
 Journal of American Statistical Association, 97, 601-610.
@@ -168,9 +161,9 @@ Heteroskedastic Modelling. R package version 3042.83.1, \url{https://CRAN.R-proj
 \code{\link[stats]{lm}}, \code{\link[stats]{glm}}, 
 \code{\link[stats]{Box.test}}, \code{\link{BoxPierce}}, \code{\link{LjungBox}}, \code{\link{MahdiMcLeod}}, 
 \code{\link{LiMcLeod}}, \code{\link{portest}}, \code{\link{ToeplitzBlock}}, \code{\link{GetResiduals}}, 
-\code{\link[TSA]{tar}}, \code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 
-\code{\link[vars]{VAR}}, \code{\link[FitAR]{FitAR}}, \code{\link[fracdiff]{fracdiff}}, 
-\code{\link[fGarch]{garchFit}}, \code{\link[tseries]{garch}}, \code{\link{varima.sim}}, \code{\link{fitstable}}.
+\code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 
+\code{\link[vars]{VAR}}, \code{\link[fracdiff]{fracdiff}}, 
+\code{\link[fGarch]{garchFit}}, \code{\link[tseries]{garch}}, \code{\link{varima.sim}}.
 }
 
 \examples{
@@ -193,30 +186,30 @@ portest(returns,test="LjungBox", MonteCarlo=FALSE) ## asymptotic LjungBox
 #################################################################################
 ## arima() function takes about 11.32 seconds
 ## Example 1
-ans1 <- arima(WWWusage,order=c(3,1,0))
+ans1 <- arima(WWWusage,fitdf=c(3,1,0))
 portest(ans1, ncores = 4)
 #
 ## arima0() function takes about 11.1 seconds
 ## Example 2
-ans2 <- arima0(WWWusage,order=c(3,1,0))
+ans2 <- arima0(WWWusage,fitdf=c(3,1,0))
 portest(ans2, ncores = 4)
 #
 ## Arima() or auto.arima() functions from forecast package take about 12.1 seconds
 ## Example 3
-ans3 <- Arima(WWWusage,order=c(3,1,0))
+ans3 <- Arima(WWWusage,fitdf=c(3,1,0))
 portest(ans3, ncores = 4)
 #
 ## ar() function takes about 7.39 seconds
 ## Example 4
-ans4 <- ar(Nile,order.max=2)
+ans4 <- ar(Nile,fitdf.max=2)
 portest(ans4, ncores = 4)
 #
 ## ar() function with your own R code takes about 8.75 seconds
 ## Example 5
 fit.model <- function(data){
-    fit <- ar(data,aic = FALSE, order.max=2)
-    order <- 2
-    res <- ts(fit$resid[-(1:order)]) 
+    fit <- ar(data,aic = FALSE, fitdf.max=2)
+    fitdf <- 2
+    res <- ts(fit$resid[-(1:fitdf)]) 
     phi <- fit$ar
     theta <- NULL
     sigma <- fit$var.pred
@@ -239,11 +232,11 @@ portest(ans5,ncores=4,model=list(sim.model=sim.model,fit.model=fit.model),pkg.na
 ## Monte-Carlo test for seasonality                                            ##
 #################################################################################
 ## Accidental Deaths in the US 1973 - 1978
-seasonal.arima<-Arima(USAccDeaths,order=c(0,1,1),seasonal=list(order= c(0,1,1)))
+seasonal.arima<-Arima(USAccDeaths,fitdf=c(0,1,1),seasonal=list(fitdf= c(0,1,1)))
 portest(seasonal.arima,ncores=4,nrep=1000,lags=1:5)
 ## Quarterly U.K. economic time series from 1957 Q3 to 1967 Q4
 cd <- EconomicUK[,1]
-cd.fit <- Arima(cd,order=c(0,1,0),seasonal=list(order=c(0,1,1),period=4))
+cd.fit <- Arima(cd,fitdf=c(0,1,0),seasonal=list(fitdf=c(0,1,1),period=4))
 portest(cd.fit, lags = c(5,10),ncores=4)
 #################################################################################
 ## Monte-Carlo test for linear models and time series regression               ##
@@ -262,7 +255,7 @@ fn <- function(obj,lags){
 portest(fit,lags=1:3,test="other",fn=fn,ncores=4) 
 detach(package:car)
 ## Time series regression 
-fit.arima <- Arima(LakeHuron, order = c(2,0,0), xreg = time(LakeHuron)-1920)
+fit.arima <- Arima(LakeHuron, fitdf = c(2,0,0), xreg = time(LakeHuron)-1920)
 portest(fit.arima,ncores=4)
 #################################################################################
 ## Monte-Carlo goodness-of-fit VAR test - Multivariate series                  ##
@@ -272,7 +265,7 @@ ibm <- log(IbmSp500[,2]+1)*100
 sp500 <- log(IbmSp500[,3]+1)*100
 IBMSP500 <- data.frame(cbind(ibm,sp500))
 ## ar.ols() function takes about 9.11 seconds
-ans6 <-  ar.ols(IBMSP500, aic=FALSE, intercept=TRUE, order.max=5)
+ans6 <-  ar.ols(IBMSP500, aic=FALSE, intercept=TRUE, fitdf.max=5)
 portest(ans6,nrep=100,test="MahdiMcLeod",ncores=4,innov.dist="t",dft=5)
 ## VAR() function takes about 11.55 seconds
 require("vars")
@@ -281,22 +274,14 @@ portest(ans7,nrep=100,test="MahdiMcLeod",ncores=4,innov.dist="bootstrap")
 portest(ans7,test="Hosking",MonteCarlo=FALSE) ## asymptotic Hosking test
 detach(package:vars)
 #################################################################################
-## Monte-Carlo test for models with heavy tails stable distributions           ##
-#################################################################################
-## It takes about 32.7 seconds on personal PC with 4 CPUs 
-data("CRSP")
-CRSP.AR5<- arima(CRSP, c(5, 0, 0))
-lags <- c(10, 20, 30)
-portest(CRSP.AR5,lags=lags,ncores=4,nrep=1000,innov.dist="stable")   
-#################################################################################
 ## Monte-Carlo test for ARCH/GARCH effects using 4 CPUs                        ##
 #################################################################################
 ## It takes about 12.65 seconds
 data("monthintel")
 returns <- as.ts(monthintel)
 lags <- c(5, 10, 20, 40)
-portest(returns, lags = lags, ncores = 4, squared.residuals = FALSE)
-portest(returns,lags=lags,ncores=4,squared.residuals=TRUE,innov.dist="t",dft=5)
+portest(returns, lags = lags, ncores = 4, sqrd.res = FALSE)
+portest(returns,lags=lags,ncores=4,sqrd.res=TRUE,innov.dist="t",dft=5)
 }
 }
 

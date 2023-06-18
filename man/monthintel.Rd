@@ -13,17 +13,12 @@ There are 372 data values.
 
 \usage{data(monthintel)}
 
-\source{
-\url{https://faculty.chicagobooth.edu/ruey-s-tsay/teaching}
-}
-
 \references{
 Tsay, R. S. (2005). "Analysis of Financial Time Series". Wiley, New York, 2nd edition.
 }
 
 \examples{
 acf(monthintel)
-fitstable(monthintel)
 }
 
 \keyword{Datasets}

@@ -29,7 +29,6 @@ Notes:               Noon buying rates in New York City for cable transfers paya
 
 \examples{
 acf(DEXCAUS)
-fitstable(DEXCAUS)
 }
 
 \keyword{Datasets}

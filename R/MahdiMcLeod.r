@@ -1,35 +1,36 @@
 "MahdiMcLeod" <-
-function(obj,lags=seq(5,30,5),order=0,season=1,squared.residuals=FALSE){
-     class.obj = class(obj)[1]
+function(obj,lags=seq(5,30,5),fitdf=0,sqrd.res=FALSE){
+
+  class.obj = class(obj)[1]
      TestType <- "0"
-    if (class.obj == "ts" || class.obj == "numeric" || class.obj == 
-        "matrix" || class.obj == "mts") 
+    if (class.obj == "ts" || class.obj == "numeric" || class.obj == "matrix" || class.obj == "mts")
         TestType <- "1"
-    if (class.obj == "ar" || class.obj == "arima0" || class.obj == 
-        "Arima" || class.obj == "ARIMA" || class.obj == "varest" || class.obj == "lm"
-        || class.obj == "glm" || class.obj == "list") 
-        TestType<-"2"
-    if (TestType == "0") 
-        stop("obj must be class ar, arima0, Arima, (ARIMA forecast_ARIMA Arima), varest, lm, (glm lm), ts, numeric, matrix, (mts ts), or list")
-    Maxlag <- max(lags)
-     if (TestType=="1")
+
+     if (class.obj == "ar" || class.obj == "arima0" || class.obj ==
+         "Arima" || class.obj == "ARIMA" || class.obj == "forecast_ARIMA" || class.obj == "varest" || class.obj == "list")
+       TestType<-"2"
+
+     if (TestType == "0")
+       stop("obj must be class ar, arima0, Arima, (forecast_ARIMA ARIMA Arima), varest, ts, numeric, matrix, (mts ts), or list")
+
+    if (TestType=="1")
        res <- as.ts(obj)
-     else{ 
+     else{
           GetResid <- GetResiduals(obj)
           res <- GetResid$res
-          order <- GetResid$order
+          fitdf <- GetResid$fitdf
      }
-     if (squared.residuals) 
+
+     if (sqrd.res)
          res <- res^2
      k <- NCOL(res)
      n <- NROW(res)
-       if (Maxlag*season >= n)
-         stop("Maximum value of arguments lags * season can't exceed n!")
+
     Det <- numeric(length(lags))
-    mat <- ToeplitzBlock(res, lag.max=max(lags),season=season)
+    mat <- ToeplitzBlock(res, Maxlag=max(lags))
     for (i in 1:length(lags))
     Det[i] <- (-3*n/(2*lags[i]+1))*log(det(mat[(1:((lags[i] +1 ) * k)), (1:((lags[i] + 1) * k))]))
-    df <- k^2*(1.5*lags*(lags+1)/(2*lags+1)-order)
+    df <- k^2*(1.5*lags*(lags+1)/(2*lags+1)-fitdf)
     NegativeDF <- which(df<0)
     df[NegativeDF] <- 0
     PVAL <- 1 - stats::pchisq(Det,df)

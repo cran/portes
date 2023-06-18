@@ -1,32 +1,38 @@
-importFrom("stats", "ar")
-importFrom("stats", "ar.ols")
-importFrom("stats", "ar.burg")
-importFrom("stats", "ar.yw")
-importFrom("stats", "ar.mle")
-importFrom("stats", "arima")
-importFrom("stats", "arima0")
-importFrom("stats", "arima.sim")
-importFrom("stats", "acf")
-importFrom("stats", "pchisq")
-importFrom("stats", "as.ts")
-importFrom("stats", "coef")
-importFrom("stats", "diffinv")
-importFrom("stats", "formula")
-importFrom("stats", "median")
-importFrom("stats", "quantile")
-importFrom("stats", "rcauchy")
-importFrom("stats", "rchisq")
-importFrom("stats", "resid")
-importFrom("stats", "runif")
-importFrom("stats", "ts")
-importFrom("stats", "update.formula")
-importFrom("stats", "simulate")
-import("parallel")
-import("forecast")
+importFrom("stats",
+"ar",
+"ar.ols",
+"ar.burg",
+"ar.yw",
+"ar.mle",
+"arima0",
+"arima",
+"arima.sim",
+"simulate",
+"acf",
+"pchisq",
+"ts",
+"as.ts",
+"coef",
+"diffinv",
+"formula",
+"median",
+"quantile",
+"rcauchy",
+"rchisq",
+"runif",
+"update.formula",
+"na.omit",
+"na.pass",
+"pgamma",
+"resid",
+ "residuals",
+"toeplitz"
+)
+
+import("parallel","forecast")
 
 export(
 "BoxPierce",
-"fitstable",
 "GetResiduals",
 "MahdiMcLeod",
 "Hosking",
@@ -35,9 +41,7 @@ export(
 "LiMcLeod",
 "LjungBox",
 "portest",
-"rStable",
 "ToeplitzBlock",
 "varima.sim",
 "vma.sim"
 )
-

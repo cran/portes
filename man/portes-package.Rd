@@ -3,7 +3,7 @@
 \docType{package}
 
 \title{
-Portmanteau Tests for Univariate and Multivariate Time Series Models 
+Portmanteau Tests for Time Series Models 
 }
 
 \description{
@@ -20,8 +20,8 @@ The simulated data may have deterministic terms, constant drifts and time trends
 \tabular{ll}{
 Package: \tab portes\cr
 Type: \tab Package\cr
-Version: \tab 5.0\cr
-Date: \tab 2020-12-12\cr
+Version: \tab 6.0\cr
+Date: \tab 2023-06-06\cr
 LazyLoad: \tab yes\cr
 LazyData: \tab yes\cr
 Classification/ACM: \tab G.3, G.4, I.5.1\cr
@@ -33,7 +33,7 @@ License: \tab GPL (>= 2)\cr
 \author{
 Esam Mahdi and A. Ian McLeod.
 
-Maintainer: Esam Mahdi <emahdi@qu.edu.qa>
+Maintainer: Esam Mahdi <emahdi2012@gmail.com>
 }
 
 \keyword{ PACKAGE }
